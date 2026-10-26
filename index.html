@@ -737,6 +737,27 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
         </div>
         </details>
       </div>
+      <div class="card pad" id="sms-card">
+        <h3>📩 SMS de Bancolombia (automático)</h3><div class="cap">Cada SMS de compra, pago, transferencia o plata recibida se anota solo en Día a Día con un 📩. Los códigos y avisos sin plata se ignoran.</div>
+        <div class="note" id="sms-need" style="margin-top:0">Necesitas una clave: créala con el botón <b>Crear mi link de Anotar</b> de la tarjeta "Ícono aparte para anotar" y vuelve aquí.</div>
+        <div id="sms-box" style="display:none">
+          <div class="copyrow"><span class="k">Tu link</span><code id="sms-link"></code><button class="btn btn-ghost" data-copy="sms-link">Copiar</button></div>
+          <ol class="steps">
+            <li>En el iPhone abre <b>Atajos → Automatización → +</b> y elige <b>Mensaje</b>.</li>
+            <li>En <b>El mensaje contiene</b> escribe <b>Bancolombia</b>. Marca <b>Ejecutar inmediatamente</b> y toca <b>Siguiente → Nuevo atajo en blanco</b>.</li>
+            <li>Agrega la acción <b>Codificar URL</b> y en su campo pon la variable <b>Entrada del atajo</b>.</li>
+            <li>Agrega <b>Obtener contenido de la URL</b>. En la URL pega <b>tu link</b> (botón Copiar de arriba) y pegada al final, sin espacios, pon la variable <b>URL codificada</b>. No cambies nada más.</li>
+            <li>Opcional: agrega <b>Mostrar notificación</b> con la variable <b>Contenido de la URL</b>. Te avisará algo como "Anotado −$45.000 · Compra · RAPPI".</li>
+          </ol>
+          <div class="note">No compartas este link: quien lo tenga puede agregar movimientos a tu panel.</div>
+        </div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+          <div class="lbl" style="margin-bottom:8px;color:var(--mid);font-size:13px">Probar con un SMS real (no guarda nada)</div>
+          <textarea id="sms-test" placeholder="Pega aquí un SMS de Bancolombia" style="width:100%;min-height:80px;background:var(--glass2);border:1px solid var(--border-hi);border-radius:10px;color:var(--hi);padding:10px;font:14px 'Inter';resize:vertical"></textarea>
+          <div class="btn-row" style="margin-top:8px"><button class="btn btn-ghost" id="sms-try">Probar</button></div>
+          <div class="note" id="sms-res"></div>
+        </div>
+      </div>
       <div class="card pad">
         <h3>Parámetros</h3><div class="cap">Afectan cálculos, saludo y alertas</div>
         <div style="display:flex;flex-direction:column;gap:14px">
@@ -1876,7 +1897,7 @@ async function pullInbox(){
     const monto=String(Math.round(num(r.monto)));
     const cat=DDCATS.includes(r.categoria)?r.categoria:'';
     const desc=[r.descripcion,(!cat&&r.categoria)?r.categoria:''].filter(Boolean).join(' · ')||'Desde el atajo';
-    state.movements.push({id:mid,fecha:r.fecha,categoria:cat,descripcion:desc+' 📱',entra:r.tipo==='entra'?monto:'',sale:r.tipo==='entra'?'':monto});
+    state.movements.push({id:mid,fecha:r.fecha,categoria:cat,descripcion:desc+(r.origen==='sms'?' 📩':' 📱'),entra:r.tipo==='entra'?monto:'',sale:r.tipo==='entra'?'':monto});
     nuevos++;
   });
   if(nuevos){
@@ -1908,6 +1929,7 @@ async function onLogin(user){
     refreshAll();
     setSync('guardado en la nube','ok');
     if(how==='migrado')toast('Subimos los datos de este navegador a tu nube ☁️');
+    loadAtajoLinks();
     await pullInbox();
   }catch(e){
     cloudReady=false;setSync('sin conexión','err');
@@ -1953,22 +1975,47 @@ document.getElementById('cl-logout').addEventListener('click',()=>{
 /* ---- ajustes: atajo ---- */
 document.getElementById('at-gen').addEventListener('click',async()=>{
   if(!cloudReady){toast('Primero inicia sesión');if(sb)showAuth();return;}
-  const ok=await askConfirm('¿Crear tu link de Anotar?','Si ya tenías un link o un atajo configurado, dejará de funcionar y tendrás que usar el nuevo.','Crear link');
+  const ok=await askConfirm('¿Crear una clave nueva?','Si ya tenías el ícono Anotar o la automatización de SMS configurados, dejarán de funcionar hasta que pongas el link nuevo.','Crear clave');
   if(!ok)return;
   const {data,error}=await sb.rpc('generar_token_atajo');
   if(error){toast('No se pudo generar la clave');return;}
-  document.getElementById('at-url').textContent=SB_URL+'/rest/v1/rpc/registrar_movimiento';
-  document.getElementById('at-key').textContent=SB_KEY;
-  document.getElementById('at-token').textContent=data;
-  document.getElementById('at-cats').textContent=ATAJO_CATS.join('\n');
-  document.getElementById('at-box').style.display='';
-  const base=location.href.split('#')[0].split('?')[0].replace(/[^/]*$/,'');
-  const link=base+'anotar.html#t='+data;
-  document.getElementById('at-linktxt').textContent=link;
-  document.getElementById('at-open').href=link;
-  document.getElementById('at-link').style.display='';
-  document.getElementById('at-note').textContent='Tu link está listo. Ábrelo en el iPhone y agrégalo a la pantalla de inicio. Este link no se vuelve a mostrar (si lo pierdes, crea otro).';
+  fillAtajoLinks(data,true);
 });
+function fillAtajoLinks(tok,nuevo){
+  const $=id=>document.getElementById(id);
+  if(!tok){$('sms-need').style.display='';$('sms-box').style.display='none';return;}
+  $('at-url').textContent=SB_URL+'/rest/v1/rpc/registrar_movimiento';
+  $('at-key').textContent=SB_KEY;
+  $('at-token').textContent=tok;
+  $('at-cats').textContent=ATAJO_CATS.join('\n');
+  $('at-box').style.display='';
+  const base=location.href.split('#')[0].split('?')[0].replace(/[^/]*$/,'');
+  const link=base+'anotar.html#t='+tok;
+  $('at-linktxt').textContent=link;
+  $('at-open').href=link;
+  $('at-link').style.display='';
+  $('at-gen').textContent='🔑 Crear clave nueva';
+  $('at-note').textContent=nuevo?'Clave nueva lista. Si tenías el atajo de SMS o el ícono Anotar configurados, actualiza su link.':'Si crees que alguien vio tu link, crea una clave nueva (los links anteriores dejan de funcionar).';
+  $('sms-link').textContent=SB_URL+'/functions/v1/sms?t='+tok+'&m=';
+  $('sms-need').style.display='none';
+  $('sms-box').style.display='';
+}
+async function loadAtajoLinks(){
+  if(!cloudReady||!sb)return;
+  const {data,error}=await sb.rpc('obtener_token_atajo');
+  if(!error)fillAtajoLinks(data||'',false);
+}
+document.getElementById('sms-try').addEventListener('click',async()=>{
+  const txt=document.getElementById('sms-test').value.trim(), out=document.getElementById('sms-res');
+  if(!txt){out.textContent='Pega primero un SMS.';return;}
+  out.textContent='Probando…';
+  try{
+    const r=await fetch(SB_URL+'/functions/v1/sms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({m:txt,prueba:true})});
+    const j=await r.json();
+    out.innerHTML=j.ok?('✅ Lo anotaría así: <b style="color:var(--hi)">'+esc(j.mensaje)+'</b>'+(j.categoria?'':'<br>Sin categoría: la puedes poner tocando el movimiento en el panel.')):'⚠️ No lo reconocí como un movimiento. Si este SMS sí era un gasto o ingreso, pásale el texto a Claude para ajustar el lector.';
+  }catch(e){out.textContent='No se pudo probar (¿sin internet?).';}
+});
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('.tabbtn');if(b&&b.dataset.tab==='ajustes')loadAtajoLinks();});
 document.getElementById('tab-ajustes').addEventListener('click',e=>{
   const b=e.target.closest('[data-copy]');if(!b)return;
   const txt=document.getElementById(b.dataset.copy).textContent;
