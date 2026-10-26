@@ -284,7 +284,9 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
         <div class="big num" id="h-cash">$0</div>
         <div class="mini-row">
           <div class="mini"><div class="k">Neto este mes</div><div class="v num" id="h-net">$0</div></div>
-          <div class="mini"><div class="k">Deuda total</div><div class="v num" id="h-debt">$0</div></div>
+          <div class="mini"><div class="k">Deuda real</div><div class="v num" id="h-debt">$0</div></div>
+          <div class="mini"><div class="k">En inversión (por vender)</div><div class="v num" id="h-inv">$0</div><div style="font-size:10px;color:var(--dim);margin-top:2px" id="h-inv-rec"></div></div>
+          <div class="mini"><div class="k">Deuda neta aprox.</div><div class="v num" id="h-net-debt">$0</div><div style="font-size:10px;color:var(--dim);margin-top:2px">deuda total − recuperable</div></div>
         </div>
         <div class="note">Este es tu dinero real, calculado desde tu hoja Día a Día. Cuando te entre la liquidación o las cesantías, regístralas allí como un ingreso y se sumarán solas.</div>
       </div>
@@ -318,6 +320,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
       <div class="card kpi"><div class="ic">💳</div><div class="k">Gasto fijo mensual</div><div class="v num" id="k-fixed">—</div><div class="sub" id="k-fixed-sub"></div></div>
       <div class="card kpi" id="k-month-card" style="cursor:pointer" title="Toca para ver el detalle y marcar qué ya pagaste"><div class="ic">📅</div><div class="k">A pagar este mes</div><div class="v num" id="k-month">—</div><div class="sub" id="k-month-sub"></div></div>
       <div class="card kpi"><div class="ic">📬</div><div class="k">Runway supuesto</div><div class="v blue num" id="k-rwsup">—</div><div class="sub">si te pagan lo que te deben, a tiempo</div></div>
+      <div class="card kpi" id="k-falta-card" style="cursor:pointer" title="Toca para ir a Deudas"><div class="ic">🔥</div><div class="k">Te falta por pagar</div><div class="v num" id="k-falta">—</div><div class="sub" id="k-falta-sub"></div></div>
     </div>
     <div class="card pad" id="k-month-panel" style="display:none;margin-bottom:16px">
       <h3>Detalle de pagos de este mes</h3>
@@ -406,16 +409,31 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
   <div class="tab" id="tab-deudas">
     <div class="eyebrow">Tus deudas</div>
     <div class="s-title">Deudas</div>
-    <div class="s-sub">Pon el total a pagar y las cuotas: el valor de cada cuota se calcula solo (total ÷ cuotas) cada vez que cambies cualquiera de los dos. Si ya sabes el valor real de tu cuota, edítalo directamente ahí — se queda como lo pongas, mientras no vuelvas a tocar el total o las cuotas. El restante nunca puede pasarse del total: si pones una cuota muy alta, se ajusta sola y te avisa. Cuando termines de pagar una del todo, usa el botón 🏁 para marcarla como saldada sin borrarla. Abajo tienes un simulador de tarjeta Nu para evaluar compras a cuotas antes de agregarlas.</div>
+    <div class="s-sub">Registra tus deudas con saldo y cuotas restantes: el pago/mes se calcula solo (saldo ÷ cuotas) y verás en qué mes termina. Marca "Inversión" si es algo que piensas revender (boletas, artículos, etc.) y pon cuánto esperas recuperar — así no se cuenta como pérdida en tu deuda real. Cuando termines de pagar una del todo, usa el botón 🏁 para marcarla como saldada sin borrarla (se atenúa y deja de contar, pero queda el historial). Abajo tienes un simulador de tarjeta Nu para evaluar compras a cuotas antes de agregarlas. Cada vez que marcas una cuota como pagada, el saldo y las cuotas restantes bajan solos.</div>
+    <div class="card pad" id="db-motiv" style="margin-bottom:16px">
+      <div style="color:var(--mid);font-size:13px;margin-bottom:9px;display:flex;align-items:center;gap:8px">🔥 Te falta por pagar</div>
+      <div class="big num" id="dm-falta">$0</div>
+      <div style="margin-top:18px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mid);margin-bottom:7px"><span id="dm-progtxt"></span><span id="dm-pct" style="font-family:'Space Grotesk';font-weight:700;color:var(--green)">0%</span></div>
+        <div style="height:12px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden"><div id="dm-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#10b981,#6ee7b7);box-shadow:0 0 14px rgba(52,211,153,.55);border-radius:999px;transition:width .7s cubic-bezier(.2,.75,.25,1)"></div></div>
+      </div>
+      <div class="mini-row">
+        <div class="mini"><div class="k">Ya pagaste</div><div class="v num" id="dm-pagado" style="color:var(--green)">$0</div></div>
+        <div class="mini"><div class="k">Cuotas por pagar</div><div class="v num" id="dm-cuotas">0</div></div>
+        <div class="mini"><div class="k">Libre de deudas en</div><div class="v" id="dm-libre">—</div></div>
+      </div>
+      <div class="note" id="dm-msg" style="color:var(--mid);font-size:13px"></div>
+    </div>
     <div class="card pad" style="margin-bottom:16px">
       <div class="tbl-scroll">
         <table class="tbl" id="db-table">
-          <thead><tr><th>Deuda</th><th class="num">Total a pagar</th><th class="num">Cuotas</th><th class="num">Valor cuota</th><th class="num">Restante</th><th style="text-align:center">Saldada</th><th></th></tr></thead>
+          <thead><tr><th>Deuda</th><th>Tipo</th><th class="num">Saldo</th><th class="num">Pago/mes (auto)</th><th class="num">Cuotas rest.</th><th class="num">Día</th><th class="num">Recuperable</th><th>Notas</th><th style="text-align:center">Saldada</th><th></th></tr></thead>
           <tbody id="db-body"></tbody>
         </table>
       </div>
       <div class="btn-row"><button class="btn" id="db-add">＋ Agregar deuda</button></div>
-      <div class="trow-tot"><span class="l b">Total restante</span><span class="v big num" id="db-total">$0</span></div>
+      <div class="trow-tot"><span class="l b">Deuda real</span><span class="v big num" id="db-total">$0</span></div>
+      <div class="trow-tot" style="border-top:none;padding-top:0"><span class="l" style="color:var(--dim);font-size:12px">En inversión por vender</span><span class="v num" id="db-inv" style="color:var(--dim);font-size:14px">$0</span></div>
     </div>
     <div class="grid2">
       <div class="card pad">
@@ -568,6 +586,66 @@ function fmtMiles(v){const d=onlyDigits(v);if(!d)return '';return d.replace(/\B(
 function moneyInputHandler(e,onChange){const d=onlyDigits(e.target.value);e.target.value=fmtMiles(d);if(onChange)onChange(d);}
 function curMonthKey(){return new Date().toISOString().slice(0,7);}
 function activeDebts(){return state.debts.filter(d=>!d.cerrada);}
+function debtDoneThisMonth(d){const s=gfStatus(d,curMonthKey());return s==='pagado'||s==='omitido';}
+/* al marcar una cuota como pagada baja el saldo y las cuotas; al desmarcarla se devuelve exactamente lo que se descontó */
+function applyDebtPayment(d,status,mk){
+  d.abonos=d.abonos||{};
+  const ab=d.abonos[mk];
+  if(status==='pagado'){
+    if(ab)return null;
+    const antes=num(d.saldo), cuotasAntes=num(d.cuotas);
+    const nuevasCuotas=Math.max(0,cuotasAntes-1);
+    let nuevo=Math.max(0,antes-num(d.pago));
+    if(nuevasCuotas===0)nuevo=0;
+    const aplicado=antes-nuevo;
+    d.saldo=nuevo;d.cuotas=nuevasCuotas;
+    d.pagado=num(d.pagado)+aplicado;
+    d.abonos[mk]={saldo:aplicado,cuotas:cuotasAntes-nuevasCuotas};
+    return {falta:nuevo,fin:nuevo<=0};
+  }
+  if(ab){
+    d.saldo=num(d.saldo)+num(ab.saldo);
+    d.cuotas=num(d.cuotas)+num(ab.cuotas);
+    d.pagado=Math.max(0,num(d.pagado)-num(ab.saldo));
+    delete d.abonos[mk];
+  }
+  return null;
+}
+function debtProgress(){
+  const act=activeDebts();
+  const falta=act.reduce((a,d)=>a+num(d.saldo),0);
+  const pagado=state.debts.reduce((a,d)=>a+num(d.pagado),0);
+  const total=falta+pagado;
+  const pct=total>0?Math.min(100,Math.floor(pagado/total*100)):0;
+  let cuotas=0,lastOff=-1;
+  act.forEach(d=>{const c=num(d.cuotas);if(c>0){cuotas+=c;const off=c-1+(debtDoneThisMonth(d)?1:0);if(off>lastOff)lastOff=off;}});
+  let libre='';
+  if(lastOff>=0){const dt=new Date();dt.setDate(1);dt.setMonth(dt.getMonth()+lastOff);libre=MONTHN[dt.getMonth()]+' '+dt.getFullYear();}
+  return {falta,pagado,total,pct,cuotas,libre};
+}
+function renderDebtMotiv(){
+  const p=debtProgress();
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('dm-falta',cop(p.falta));
+  set('dm-pagado',cop(p.pagado));
+  set('dm-cuotas',String(p.cuotas));
+  set('dm-libre',p.libre||(p.total>0&&p.falta<=0?'¡ya! 🎉':'—'));
+  set('dm-pct',p.pct+'%');
+  set('dm-progtxt',p.total>0?(cop(p.pagado)+' pagado de '+cop(p.total)):'Sin deudas registradas');
+  const bar=document.getElementById('dm-bar');if(bar)bar.style.width=p.pct+'%';
+  let msg;
+  if(p.total===0)msg='Agrega tus deudas abajo. Cada cuota que marques como pagada (en Gastos Fijos o en "A pagar este mes") hará bajar este número.';
+  else if(p.falta<=0)msg='🎉 ¡Libre de deudas! Todo lo que registraste está pagado.';
+  else if(p.pct===0)msg='Cada cuota que marques como pagada baja este número. La primera es la que más cuesta.';
+  else if(p.pct<25)msg='💪 Buen arranque: ya abonaste '+cop(p.pagado)+'. Sigue así.';
+  else if(p.pct<50)msg='🚀 Vas en '+p.pct+'%. Cada cuota te acerca a la mitad.';
+  else if(p.pct<75)msg='🔥 Ya pasaste la mitad: lo que te falta es menos de lo que ya pagaste.';
+  else msg='🏁 Recta final: solo te queda el '+(100-p.pct)+'%.';
+  set('dm-msg',msg);
+  const kf=document.getElementById('k-falta');
+  if(kf){kf.textContent=cop(p.falta);kf.style.color=p.total>0&&p.falta<=0?'var(--green)':'';}
+  set('k-falta-sub',p.total>0?(p.pct+'% pagado'+(p.libre?' · libre en '+p.libre:'')):'aún no tienes deudas registradas');
+}
 function gfStatus(f,mk){return (f.pagos&&f.pagos[mk])||'pendiente';}
 function gfCycleStatus(f){
   const mk=curMonthKey();
@@ -608,17 +686,22 @@ function calc(){
   const fixedPer=state.fixed.filter(f=>f.tipo==='Personal').reduce((a,f)=>a+num(f.monto),0);
   const fixedTot=fixedNeg+fixedPer;
   const debts=activeDebts();
-  const debtTotal=debts.reduce((a,d)=>a+num(d.cuotas)*num(d.pago),0);
-  return {fixedNeg,fixedPer,fixedTot,debtTotal};
+  const debtTotal=debts.reduce((a,d)=>a+num(d.saldo),0);
+  const debtLiability=debts.filter(d=>d.tipo!=='Inversión').reduce((a,d)=>a+num(d.saldo),0);
+  const debtInversion=debts.filter(d=>d.tipo==='Inversión').reduce((a,d)=>a+num(d.saldo),0);
+  const recuperableTotal=debts.filter(d=>d.tipo==='Inversión').reduce((a,d)=>a+num(d.recuperable),0);
+  const netDebtApprox=debtTotal-recuperableTotal;
+  return {fixedNeg,fixedPer,fixedTot,debtTotal,debtLiability,debtInversion,recuperableTotal,netDebtApprox};
 }
 function projection(income,startBal){
-  const c=calc();let bal=startBal;const rows=[];
+  const mk=curMonthKey();let bal=startBal;const rows=[];
   for(let i=0;i<6;i++){
     const inc=i>=1?income:0;
-    let debtPay=0;
-    activeDebts().forEach(d=>{if(i<num(d.cuotas))debtPay+=num(d.pago);});
+    let debtPay=0,fixedM=0;
+    state.fixed.forEach(f=>{if(i===0&&gfStatus(f,mk)!=='pendiente')return;fixedM+=num(f.monto);});
+    activeDebts().forEach(d=>{const off=debtDoneThisMonth(d)?1:0;if(i>=off&&i<num(d.cuotas)+off)debtPay+=num(d.pago);});
     const recv=state.receivables.reduce((a,r)=>a+(num(r.mes)===i?num(r.monto):0),0);
-    const egresos=c.fixedTot+debtPay;
+    const egresos=fixedM+debtPay;
     bal=bal-egresos+inc+recv;
     rows.push({egresos,inc,recv,bal});
   }
@@ -707,7 +790,13 @@ function renderResumen(){
   document.getElementById('h-cash').textContent=cop(ddSaldo());
   const nm=netThisMonth();const ne=document.getElementById('h-net');
   ne.textContent=cop(nm);ne.style.color=nm<0?'var(--red)':nm>0?'var(--green)':'var(--hi)';
-  document.getElementById('h-debt').textContent=cop(c.debtTotal);
+  document.getElementById('h-debt').textContent=cop(c.debtLiability);
+  const invEl=document.getElementById('h-inv');
+  if(invEl)invEl.textContent=cop(c.debtInversion);
+  const invRecEl=document.getElementById('h-inv-rec');
+  if(invRecEl)invRecEl.textContent=c.recuperableTotal?('recuperable: '+cop(c.recuperableTotal)):'';
+  const ndEl=document.getElementById('h-net-debt');
+  if(ndEl){ndEl.textContent=cop(c.netDebtApprox);ndEl.style.color=c.netDebtApprox<=0?'var(--green)':'var(--hi)';}
   const rw=runwayNow(), meta=heavyMonthly();
   document.getElementById('k-runway').textContent=rw?mesTxt(rw):'—';
   const rwSupK=runwaySupuesto();
@@ -717,8 +806,9 @@ function renderResumen(){
   document.getElementById('k-fixed').textContent=cop(c.fixedTot);
   document.getElementById('k-fixed-sub').textContent=short(c.fixedNeg)+' negocio · '+short(c.fixedPer)+' personal';
   const mk=curMonthKey();
-  const totalItemsMonth=state.fixed.length+activeDebts().filter(d=>num(d.cuotas)>0).length;
-  const pendItemsMonth=state.fixed.filter(f=>gfStatus(f,mk)==='pendiente').length+activeDebts().filter(d=>num(d.cuotas)>0&&gfStatus(d,mk)==='pendiente').length;
+  const monthItems=payItems();
+  const totalItemsMonth=monthItems.length;
+  const pendItemsMonth=monthItems.filter(i=>i.status==='pendiente').length;
   document.getElementById('k-month').textContent=cop(thisMonthPending());
   document.getElementById('k-month-sub').textContent=(totalItemsMonth?(pendItemsMonth+' de '+totalItemsMonth+' pagos pendientes · toca para ver'):'toca para ver detalle');
   if(document.getElementById('k-month-panel').style.display!=='none')renderPayLists();
@@ -727,6 +817,7 @@ function renderResumen(){
   else{box.className='alert';badge.textContent='OK';txt.textContent='Runway sobre el mínimo de '+state.runwayMin+' meses ('+rw.toLocaleString('es-CO',{maximumFractionDigits:1})+'). Prioridad: que entren ventas pronto.';}
   ensureMini();if(charts.mini){charts.mini.data.labels=projMonths(6);charts.mini.data.datasets[0].data=projection(0,ddSaldo()).map(r=>r.bal);charts.mini.update();}
   renderSavings();
+  renderDebtMotiv();
 }
 function savedFromDD(){return state.movements.filter(m=>m.categoria==='Ahorro/Reserva').reduce((a,m)=>a+num(m.sale),0);}
 function savingsTotal(){return num(state.savings.previo)+savedFromDD();}
@@ -763,9 +854,10 @@ function payItems(){
   const items=[];
   state.fixed.forEach(f=>items.push({dia:num(f.dia),n:f.concepto||'Gasto fijo',a:num(f.monto),id:f.id,kind:'fixed',status:gfStatus(f,mk)}));
   activeDebts().forEach(d=>{
-    if(num(d.cuotas)<=0)return;
+    const pagadoMes=gfStatus(d,mk)==='pagado';
+    if(num(d.cuotas)<=0&&!pagadoMes)return;
     const total=num(d.cuotasTotal),rest=num(d.cuotas);
-    const cuotaTxt=total>0?(' · cuota '+(total-rest+1)+'/'+total):(rest>0?(' · quedan '+rest+' cuotas'):'');
+    const cuotaTxt=total>0?(' · cuota '+(total-rest+(pagadoMes?0:1))+'/'+total):(rest>0?(' · quedan '+rest+' cuotas'):'');
     items.push({dia:num(d.dia),n:(d.nombre||'Deuda')+cuotaTxt,a:num(d.pago),id:d.id,kind:'debt',status:gfStatus(d,mk)});
   });
   items.sort((a,b)=>(a.dia||99)-(b.dia||99));
@@ -802,16 +894,23 @@ function handlePayClick(e){
   const kind=btn.dataset.kind;
   const obj=kind==='fixed'?state.fixed.find(x=>x.id===btn.dataset.id):state.debts.find(x=>x.id===btn.dataset.id);
   if(!obj)return;
+  const mk=curMonthKey();
   const next=gfCycleStatus(obj);
-  syncPaymentMovement(obj,next,curMonthKey(),kind);
+  syncPaymentMovement(obj,next,mk,kind);
+  let res=null;
+  if(kind==='debt'){res=applyDebtPayment(obj,next,mk);buildDB();}
   buildDD();
   save();
   renderPayLists();
   renderResumen();
-  toast('Marcado como '+(next==='pagado'?'pagado':next==='omitido'?'omitido este mes':'pendiente'));
+  const nm=obj.nombre||'la deuda';
+  if(res&&res.fin)toast('🎉 ¡Terminaste de pagar '+nm+'! Márcala con 🏁 en Deudas');
+  else if(res)toast('✓ Cuota pagada · te faltan '+cop(res.falta)+' en '+nm);
+  else toast('Marcado como '+(next==='pagado'?'pagado':next==='omitido'?'omitido este mes':'pendiente'));
 }
 document.getElementById('gf-pay').addEventListener('click',handlePayClick);
 document.getElementById('k-month-list').addEventListener('click',handlePayClick);
+document.getElementById('k-falta-card').addEventListener('click',()=>{const b=document.querySelector('.tabbtn[data-tab="deudas"]');if(b)b.click();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('k-month-card').addEventListener('click',()=>{
   const panel=document.getElementById('k-month-panel');
   const show=panel.style.display==='none';
@@ -905,15 +1004,17 @@ function buildDB(){
   const sorted=[...state.debts].sort((a,b)=>(a.cerrada?1:0)-(b.cerrada?1:0));
   document.getElementById('db-body').innerHTML=sorted.map(d=>{
     const cuotasN=num(d.cuotas);
-    const fin=cuotasN>0?MONTHN[(new Date().getMonth()+cuotasN-1)%12]:'';
+    const fin=cuotasN>0?MONTHN[(new Date().getMonth()+cuotasN-1+(debtDoneThisMonth(d)?1:0))%12]:'';
     const cerrada=!!d.cerrada;
-    const restante=num(d.cuotas)*num(d.pago);
     return '<tr data-id="'+d.id+'"'+(cerrada?' style="opacity:.45"':'')+'>'
     +'<td><input type="text" data-f="nombre" value="'+(d.nombre||'').replace(/"/g,'&quot;')+'" style="'+(cerrada?'text-decoration:line-through':'')+'"></td>'
-    +'<td><input type="text" inputmode="numeric" class="num money" data-f="saldo" value="'+fmtMiles(d.saldo)+'" placeholder="0" '+(cerrada?'disabled':'')+'></td>'
-    +'<td><input type="number" class="num" data-f="cuotas" value="'+(d.cuotas||'')+'" style="max-width:80px" '+(cerrada?'disabled':'')+'>'+(fin&&!cerrada?'<div style="font-size:10px;color:var(--dim);margin-top:2px;text-align:right">termina: '+fin+'</div>':'')+'</td>'
+    +'<td><select data-f="tipo" '+(cerrada?'disabled':'')+'><option '+(d.tipo!=='Inversión'?'selected':'')+'>Deuda</option><option '+(d.tipo==='Inversión'?'selected':'')+'>Inversión</option></select></td>'
+    +'<td><input type="text" inputmode="numeric" class="num money" data-f="saldo" value="'+fmtMiles(d.saldo)+'" '+(cerrada?'disabled':'')+'>'+(num(d.pagado)>0?'<div style="font-size:10px;color:var(--green);margin-top:2px;text-align:right">ya pagaste '+cop(d.pagado)+'</div>':'')+'</td>'
     +'<td><input type="text" inputmode="numeric" class="num money" data-f="pago" value="'+fmtMiles(d.pago)+'" placeholder="auto" '+(cerrada?'disabled':'')+'></td>'
-    +'<td class="num" data-restante="'+d.id+'">'+cop(restante)+'</td>'
+    +'<td><input type="number" class="num" data-f="cuotas" value="'+(d.cuotas||'')+'" style="max-width:80px" '+(cerrada?'disabled':'')+'>'+(fin&&!cerrada?'<div style="font-size:10px;color:var(--dim);margin-top:2px;text-align:right">termina: '+fin+'</div>':'')+'</td>'
+    +'<td><input type="number" class="num" data-f="dia" value="'+(d.dia||'')+'" style="max-width:70px" '+(cerrada?'disabled':'')+'></td>'
+    +'<td><input type="text" inputmode="numeric" class="num money" data-f="recuperable" value="'+fmtMiles(d.recuperable)+'" placeholder="—" '+(cerrada?'disabled':'')+'></td>'
+    +'<td><input type="text" data-f="notas" value="'+(d.notas||'').replace(/"/g,'&quot;')+'"></td>'
     +'<td style="text-align:center"><button class="del" data-close="'+d.id+'" title="'+(cerrada?'Reabrir esta deuda':'Marcar como saldada por completo (ya no se cuenta)')+'" style="color:'+(cerrada?'var(--green)':'var(--dim)')+';font-size:17px">'+(cerrada?'↺':'🏁')+'</button></td>'
     +'<td><button class="del" data-del="'+d.id+'">✕</button></td></tr>';
   }).join('');
@@ -944,7 +1045,11 @@ function buildMtPlazo(){
 }
 function updateDBderived(){
   const c=calc();
-  document.getElementById('db-total').textContent=cop(c.debtTotal);
+  document.getElementById('db-total').textContent=cop(c.debtLiability);
+  const invTotEl=document.getElementById('db-inv');
+  if(invTotEl){
+    invTotEl.textContent=cop(c.debtInversion)+(c.recuperableTotal?' (recuperable est. '+cop(c.recuperableTotal)+')':'');
+  }
   const mtMontoEl=document.getElementById('mt-monto');
   if(document.activeElement!==mtMontoEl)mtMontoEl.value=fmtMiles(state.card.monto);
   document.getElementById('mt-ea').value=state.card.ea;
@@ -1120,12 +1225,12 @@ document.getElementById('db-body').addEventListener('input',e=>{
   const tr=e.target.closest('tr');if(!tr)return;
   const d=state.debts.find(x=>x.id===tr.dataset.id);if(!d)return;
   const f=e.target.dataset.f;
-  if(f==='saldo'||f==='pago'){moneyInputHandler(e,val=>{d[f]=val;});}
+  if(f==='saldo'||f==='pago'||f==='recuperable'){moneyInputHandler(e,val=>{d[f]=val;});}
   else{d[f]=e.target.value;}
   if(f==='saldo'||f==='cuotas'){
     const sN=num(d.saldo),cN=num(d.cuotas);
     if(sN>0&&cN>0){
-      d.pago=Math.floor(sN/cN);
+      d.pago=Math.round(sN/cN);
       const pagoEl=tr.querySelector('[data-f="pago"]');
       if(pagoEl&&document.activeElement!==pagoEl)pagoEl.value=fmtMiles(d.pago);
     }
@@ -1133,7 +1238,7 @@ document.getElementById('db-body').addEventListener('input',e=>{
   if(f==='cuotas'){
     if(!num(d.cuotasTotal)&&num(d.cuotas)>0)d.cuotasTotal=num(d.cuotas);
     const cN=num(d.cuotas);
-    const finTxt=cN>0?('termina: '+MONTHN[(new Date().getMonth()+cN-1)%12]):'';
+    const finTxt=cN>0?('termina: '+MONTHN[(new Date().getMonth()+cN-1+(debtDoneThisMonth(d)?1:0))%12]):'';
     let finEl=tr.querySelector('.fin-label');
     if(finEl&&!finTxt){finEl.remove();}
     else if(finEl&&finTxt){finEl.textContent=finTxt;}
@@ -1145,33 +1250,15 @@ document.getElementById('db-body').addEventListener('input',e=>{
       e.target.parentElement.appendChild(finEl);
     }
   }
-  if(f==='cuotas'||f==='pago'||f==='saldo'){
-    const restEl=tr.querySelector('[data-restante="'+d.id+'"]');
-    if(restEl)restEl.textContent=cop(num(d.cuotas)*num(d.pago));
-  }
   save();updateDBderived();
 });
-document.getElementById('db-body').addEventListener('focusout',e=>{
-  if(e.target.dataset.f!=='pago')return;
-  const tr=e.target.closest('tr');if(!tr)return;
-  const d=state.debts.find(x=>x.id===tr.dataset.id);if(!d)return;
-  const sN=num(d.saldo),cN=num(d.cuotas);
-  if(sN>0&&cN>0&&cN*num(d.pago)>sN){
-    const maxPago=Math.floor(sN/cN);
-    d.pago=maxPago;
-    e.target.value=fmtMiles(maxPago);
-    const restEl=tr.querySelector('[data-restante="'+d.id+'"]');
-    if(restEl)restEl.textContent=cop(cN*maxPago);
-    save();updateDBderived();
-    toast('Esa cuota multiplicada por las cuotas pasaba el total a pagar — se ajustó a '+cop(maxPago)+' para no pasarse');
-  }
-});
+document.getElementById('db-body').addEventListener('change',e=>{if(e.target.dataset.f==='tipo'){const tr=e.target.closest('tr');const d=state.debts.find(x=>x.id===tr.dataset.id);if(!d)return;d.tipo=e.target.value;save();buildDB();}});
 document.getElementById('db-body').addEventListener('click',e=>{
   const c=e.target.closest('[data-close]');
   if(c){const d=state.debts.find(x=>x.id===c.dataset.close);if(!d)return;d.cerrada=!d.cerrada;save();buildDB();toast(d.cerrada?'"'+(d.nombre||'Deuda')+'" marcada como saldada':'"'+(d.nombre||'Deuda')+'" reabierta');return;}
   const d=e.target.closest('[data-del]');if(!d)return;state.debts=state.debts.filter(x=>x.id!==d.dataset.del);save();buildDB();
 });
-document.getElementById('db-add').addEventListener('click',()=>{state.debts.push({id:uid(),nombre:'',saldo:'',pago:'',cuotas:'',cuotasTotal:''});save();buildDB();});
+document.getElementById('db-add').addEventListener('click',()=>{state.debts.push({id:uid(),nombre:'',tipo:'Deuda',saldo:'',pago:'',cuotas:'',cuotasTotal:'',dia:'',recuperable:'',notas:''});save();buildDB();});
 
 document.getElementById('rc-body').addEventListener('input',e=>{
   const tr=e.target.closest('tr');if(!tr)return;
@@ -1200,10 +1287,10 @@ document.getElementById('mt-add').addEventListener('click',function(){
   var cuota=Math.round(pmt(monthlyRate(ea),plazo,monto));
   var nombre=(state.card.concepto||'').trim()||'Compra tarjeta Nu';
   var intr=Math.round(cuota*plazo-monto);
-  var detalle='Saldo: '+cop(monto)+'\nCuota: '+cop(cuota)+'/mes durante '+plazo+(plazo===1?' mes':' meses')+'\nIntereses: '+cop(intr)+'\nTotal a pagar: '+cop(cuota*plazo);
+  var detalle='Compra: '+cop(monto)+'\nQueda como deuda (con intereses): '+cop(cuota*plazo)+'\nCuota: '+cop(cuota)+'/mes durante '+plazo+(plazo===1?' mes':' meses')+'\nIntereses: '+cop(intr)+'\nTotal a pagar: '+cop(cuota*plazo);
   askConfirm('¿Agregar "'+nombre+'" a tus deudas?',detalle,'Sí, agregar').then(function(ok){
     if(!ok)return;
-    state.debts.push({id:uid(),nombre:nombre,saldo:cuota*plazo,pago:cuota,cuotas:plazo,cuotasTotal:plazo});
+    state.debts.push({id:uid(),nombre:nombre,saldo:cuota*plazo,pago:cuota,cuotas:plazo,cuotasTotal:plazo,dia:num(state.card.dia)||'',notas:plazo+(plazo===1?' cuota @ ':' cuotas @ ')+ea+'% E.A. · interés '+cop(intr)});
     save();buildDB();
     toast('"'+nombre+'" agregada a tus deudas');
     var t=document.getElementById('db-table');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});
