@@ -1468,7 +1468,7 @@ function cloudAfterSave(){
 }
 async function pushCloud(){
   clearTimeout(cloudTimer);cloudTimer=null;
-  if(!cloudReady)return false;
+  if(!sb||!cloudUser)return false;
   if(cloudPushing){await cloudPushing;}
   cloudPushing=(async()=>{
     const ts=new Date().toISOString();
