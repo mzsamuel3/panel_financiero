@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --bg:#0a0606;--bg2:#150808;
@@ -207,6 +208,28 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
   .card,.tip,.kpi,.pay{transition:none!important;transform:none!important}
 }
 
+/* ===== nube: login + estado de sincronización ===== */
+.sync-pill{font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--mid);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.sync-pill.ok::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+.sync-pill.busy::before{background:var(--amber)}
+.sync-pill.err::before{background:var(--red)}
+.auth-bg{position:fixed;inset:0;z-index:300;background:rgba(10,6,6,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:20px}
+.auth-bg.show{display:flex}
+.auth-card{width:100%;max-width:380px;padding:28px 26px}
+.auth-card h2{font-size:24px;font-weight:700;margin-bottom:4px}
+.auth-card .cap{color:var(--mid);font-size:13px;margin-bottom:20px}
+.auth-card form{display:flex;flex-direction:column;gap:13px}
+.auth-card .inp{width:100%}
+.auth-err{color:var(--red);font-size:13px;min-height:18px}
+.auth-skip{background:none;border:none;color:var(--dim);font-size:12.5px;margin-top:14px;cursor:pointer;text-decoration:underline;width:100%}
+.copyrow{display:flex;gap:8px;align-items:center;margin-top:8px}
+.copyrow code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:9px;padding:8px 10px;font-size:12px;color:var(--hi)}
+.copyrow .k{min-width:84px;color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.steps{margin:12px 0 0 18px;color:var(--mid);font-size:13px;line-height:1.65}
+.steps b{color:var(--hi)}
+@media (max-width:640px){.copyrow{flex-wrap:wrap}.copyrow .k{min-width:100%}}
+
 /* modal de confirmación propio (confirm() nativo se bloquea en visores embebidos) */
 .modal-bg{position:fixed;inset:0;z-index:200;background:rgba(4,8,17,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s ease}
 .modal-bg.show{opacity:1;pointer-events:auto}
@@ -256,6 +279,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 <div class="bg-glow"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><div class="cursor-glow" id="cursorGlow"></div></div>
 <nav><div class="nav-in">
   <div class="brand"><span class="dot"></span> Panel Financiero</div>
+  <button class="sync-pill" id="syncPill" title="Estado de la nube">solo este navegador</button>
   <div class="nav-links" id="tabs">
     <button class="tabbtn on" data-tab="resumen">Resumen</button>
     <button class="tabbtn" data-tab="diaadia">Día a Día</button>
@@ -276,7 +300,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
       <div class="hello"><span id="g-hello">Hola</span>, <span class="accent" id="g-name">socio</span></div>
       <div class="date" id="g-date"></div>
     </div>
-    <div class="banner">👋 Bienvenido a tu panel financiero. Está vacío para que lo llenes con <b>tus</b> finanzas. Empieza en <b>Ajustes</b> poniendo tu nombre, y en <b>Día a Día</b> tu saldo actual; luego agrega tus gastos fijos y deudas. Todo se guarda solo en tu navegador.</div>
+    <div class="banner">👋 Bienvenido a tu panel financiero. Está vacío para que lo llenes con <b>tus</b> finanzas. Empieza en <b>Ajustes</b> poniendo tu nombre, y en <b>Día a Día</b> tu saldo actual; luego agrega tus gastos fijos y deudas. Todo se guarda en tu nube y se sincroniza entre tus dispositivos.</div>
 
     <div class="hero-grid">
       <div class="card pad hero-cash">
@@ -518,8 +542,37 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
     <div class="eyebrow">Configuración</div>
     <div class="s-title">Ajustes y datos</div>
     <div class="s-sub">Parámetros del panel y respaldo de tus datos.</div>
-    <div class="banner">💾 Tus datos se guardan en este navegador. Para no perderlos, usa <b>Exportar</b> de vez en cuando (guarda un archivo de respaldo).</div>
+    <div class="banner">☁️ Con la sesión iniciada, tus datos se guardan en tu nube (Supabase) y los ves igual en el computador y en el celular. Igual puedes <b>Exportar</b> un respaldo de vez en cuando.</div>
     <div class="grid2">
+      <div class="card pad">
+        <h3>☁️ Cuenta y nube</h3><div class="cap">Dónde se guardan tus datos</div>
+        <div id="cl-status" style="font-size:13.5px;color:var(--mid);line-height:1.6"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="cl-sync">↻ Sincronizar ahora</button>
+          <button class="btn btn-ghost" id="cl-login">Iniciar sesión</button>
+          <button class="btn btn-ghost" id="cl-logout" style="color:var(--red)">Cerrar sesión</button>
+        </div>
+      </div>
+      <div class="card pad">
+        <h3>📱 Atajo de iPhone "Anotar gasto"</h3><div class="cap">Registra gastos desde Siri o la pantalla de inicio; aparecen solos en Día a Día al abrir el panel</div>
+        <button class="btn" id="at-gen">🔑 Generar clave del atajo</button>
+        <div class="note" id="at-note">Necesitas haber iniciado sesión. La clave solo se muestra una vez: cópiala al atajo. Si generas otra, la anterior deja de funcionar.</div>
+        <div id="at-box" style="display:none">
+          <div class="copyrow"><span class="k">URL</span><code id="at-url"></code><button class="btn btn-ghost" data-copy="at-url">Copiar</button></div>
+          <div class="copyrow"><span class="k">apikey</span><code id="at-key"></code><button class="btn btn-ghost" data-copy="at-key">Copiar</button></div>
+          <div class="copyrow"><span class="k">p_token</span><code id="at-token"></code><button class="btn btn-ghost" data-copy="at-token">Copiar</button></div>
+          <div class="copyrow"><span class="k">Categorías</span><code id="at-cats"></code><button class="btn btn-ghost" data-copy="at-cats">Copiar</button></div>
+          <ol class="steps">
+            <li>En la app <b>Atajos</b> toca <b>+</b> y nómbralo <b>Anotar gasto</b>.</li>
+            <li>Agrega <b>Solicitar entrada</b> → tipo <b>Número</b>, pregunta "¿Cuánto?".</li>
+            <li>Agrega <b>Lista</b> y pega las categorías (una por línea), y después <b>Elegir de la lista</b>.</li>
+            <li>Agrega <b>Solicitar entrada</b> → tipo <b>Texto</b>, pregunta "¿En qué?".</li>
+            <li>Agrega <b>Obtener contenido de la URL</b>: pega la <b>URL</b>, método <b>POST</b>. En <b>Encabezados</b> agrega <b>apikey</b> (pega el valor) y <b>Content-Type</b> = <b>application/json</b>. En <b>Cuerpo de la solicitud</b> elige <b>JSON</b> con 4 campos de tipo Texto: <b>p_token</b> (pega la clave), <b>p_monto</b> (variable "Entrada proporcionada" del paso 2), <b>p_categoria</b> (variable "Elemento elegido"), <b>p_descripcion</b> (variable "Entrada proporcionada" del paso 4).</li>
+            <li>Agrega <b>Mostrar notificación</b> con el texto "Anotado ✓".</li>
+            <li>Listo: di <b>"Oye Siri, anotar gasto"</b> o agrégalo a la pantalla de inicio desde el menú del atajo.</li>
+          </ol>
+        </div>
+      </div>
       <div class="card pad">
         <h3>Parámetros</h3><div class="cap">Afectan cálculos, saludo y alertas</div>
         <div style="display:flex;flex-direction:column;gap:14px">
@@ -548,9 +601,20 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
     </div>
   </div>
 
-  <div class="foot">Panel financiero personal · guardado en tu navegador · construido con tus datos</div>
+  <div class="foot">Panel financiero personal · sincronizado con tu nube · construido con tus datos</div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="auth-bg" id="authBg"><div class="card auth-card">
+  <h2>Panel Financiero</h2>
+  <div class="cap">Inicia sesión para ver tus datos en todos tus dispositivos.</div>
+  <form id="authForm">
+    <label class="field"><span>Correo</span><input class="inp" type="email" id="authEmail" autocomplete="username" required></label>
+    <label class="field"><span>Contraseña</span><input class="inp" type="password" id="authPass" autocomplete="current-password" required></label>
+    <div class="auth-err" id="authErr"></div>
+    <button class="btn" type="submit" id="authBtn" style="justify-content:center">Entrar</button>
+  </form>
+  <button class="auth-skip" id="authSkip">Seguir sin conexión (solo este navegador)</button>
+</div></div>
 <div class="modal-bg" id="modalBg"><div class="modal">
   <h4 id="modalTitle">Confirmar</h4>
   <div class="mtxt" id="modalTxt"></div>
@@ -576,7 +640,7 @@ const KEY='panelFinanzas_plantilla_v1';
 let state=load();
 let mem=null;
 function load(){try{const r=localStorage.getItem(KEY);if(r)return Object.assign(structuredClone(DEFAULT),JSON.parse(r));}catch(e){}return structuredClone(DEFAULT);}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){mem=JSON.stringify(state);}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){mem=JSON.stringify(state);}if(typeof cloudAfterSave==="function")cloudAfterSave();}
 function uid(){return Math.random().toString(36).slice(2,9);}
 
 const num=v=>{const n=parseFloat(v);return isNaN(n)?0:n;};
@@ -1378,6 +1442,200 @@ document.getElementById('sv-previo').value=fmtMiles(state.savings.previo);
 document.getElementById('sv-ingreso').value=fmtMiles(state.savings.ingreso);
 renderGreeting();
 renderResumen();
+</script>
+<script>
+/* ===== NUBE (Supabase): login, guardado sincronizado y bandeja del atajo ===== */
+const SB_URL='https://lafahdrnkqdbtpfzwfht.supabase.co';
+const SB_KEY='sb_publishable_Y75BgtwGsw-YKlPc40hddg_pVJvwwqZ';
+const ATAJO_CATS=['Alimentación','Transporte','Salud','Vivienda','Servicios','Emprendimiento','Ocio/Otros','Deudas/Tarjeta','Gastos Fijos'];
+let sb=null, cloudUser=null, cloudReady=false, cloudTimer=null, cloudPending=false, cloudPushing=null, lastRemote=null, lastCheck=0;
+
+function setSync(txt,cls){const p=document.getElementById('syncPill');if(!p)return;p.textContent=txt;p.className='sync-pill'+(cls?' '+cls:'');renderCloudCfg();}
+function hasLocalData(st){return (st.movements||[]).length||(st.fixed||[]).length||(st.debts||[]).length||(st.receivables||[]).length||num(st.cash)>0;}
+
+function refreshAll(){
+  initIds();
+  document.getElementById('dd-inicial').value=fmtMiles(state.cash);
+  buildDD();buildGF();buildDB();buildRC();buildMtPlazo();fillCfg();renderGreeting();renderResumen();renderSim();
+}
+
+function cloudAfterSave(){
+  if(!cloudReady)return;
+  cloudPending=true;
+  setSync('guardando…','busy');
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(pushCloud,700);
+}
+async function pushCloud(){
+  clearTimeout(cloudTimer);cloudTimer=null;
+  if(!cloudReady)return false;
+  if(cloudPushing){await cloudPushing;}
+  cloudPushing=(async()=>{
+    const ts=new Date().toISOString();
+    cloudPending=false;
+    const {error}=await sb.from('panel_estado').upsert({user_id:cloudUser.id,data:state,updated_at:ts});
+    if(error){cloudPending=true;setSync('sin conexión · reintentando','err');return false;}
+    lastRemote=ts;
+    if(!cloudPending)setSync('guardado en la nube','ok');
+    return true;
+  })();
+  const ok=await cloudPushing;cloudPushing=null;return ok;
+}
+
+async function loadCloud(){
+  const {data,error}=await sb.from('panel_estado').select('data,updated_at').eq('user_id',cloudUser.id).maybeSingle();
+  if(error)throw error;
+  if(data){
+    state=Object.assign(structuredClone(DEFAULT),data.data||{});
+    lastRemote=data.updated_at;
+    initIds();
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+    return 'cloud';
+  }
+  // primera vez: sube lo que haya en este navegador
+  const hadLocal=hasLocalData(state);
+  await pushCloud();
+  return hadLocal?'migrado':'nuevo';
+}
+
+async function checkRemote(){
+  if(!cloudReady||cloudPending||cloudTimer)return;
+  const {data,error}=await sb.from('panel_estado').select('data,updated_at').eq('user_id',cloudUser.id).maybeSingle();
+  if(error||!data)return;
+  if(!lastRemote||new Date(data.updated_at)>new Date(lastRemote)){
+    if(cloudPending||cloudTimer)return;
+    state=Object.assign(structuredClone(DEFAULT),data.data||{});
+    lastRemote=data.updated_at;
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+    refreshAll();
+    toast('Actualizado con cambios de otro dispositivo');
+  }
+}
+
+async function pullInbox(){
+  if(!cloudReady)return;
+  const {data,error}=await sb.from('gastos_entrantes').select('*').eq('procesado',false).order('id');
+  if(error||!data||!data.length)return;
+  let nuevos=0;const ids=[];
+  data.forEach(r=>{
+    ids.push(r.id);
+    const mid='in_'+r.id;
+    if(state.movements.find(m=>m.id===mid))return;
+    const monto=String(Math.round(num(r.monto)));
+    const cat=DDCATS.includes(r.categoria)?r.categoria:'';
+    const desc=[r.descripcion,(!cat&&r.categoria)?r.categoria:''].filter(Boolean).join(' · ')||'Desde el atajo';
+    state.movements.push({id:mid,fecha:r.fecha,categoria:cat,descripcion:desc+' 📱',entra:r.tipo==='entra'?monto:'',sale:r.tipo==='entra'?'':monto});
+    nuevos++;
+  });
+  if(nuevos){
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+    const ok=await pushCloud();
+    if(!ok)return; // se reintenta en la próxima sincronización; el id evita duplicados
+    refreshAll();
+    toast(nuevos===1?'1 movimiento nuevo desde el atajo 📱':nuevos+' movimientos nuevos desde el atajo 📱');
+  }
+  await sb.from('gastos_entrantes').update({procesado:true}).in('id',ids);
+}
+
+async function cloudSync(){
+  if(!cloudReady)return;
+  lastCheck=Date.now();
+  if(cloudPending||cloudTimer)await pushCloud();
+  await checkRemote();
+  await pullInbox();
+}
+
+/* ---- login ---- */
+function showAuth(){document.getElementById('authBg').classList.add('show');setTimeout(()=>document.getElementById('authEmail').focus(),50);}
+function hideAuth(){document.getElementById('authBg').classList.remove('show');document.getElementById('authErr').textContent='';}
+async function onLogin(user){
+  cloudUser=user;hideAuth();setSync('conectando…','busy');
+  try{
+    const how=await loadCloud();
+    cloudReady=true;
+    refreshAll();
+    setSync('guardado en la nube','ok');
+    if(how==='migrado')toast('Subimos los datos de este navegador a tu nube ☁️');
+    await pullInbox();
+  }catch(e){
+    cloudReady=false;setSync('sin conexión','err');
+    toast('No se pudo conectar a la nube; trabajas en este navegador');
+  }
+}
+document.getElementById('authForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!sb)return;
+  const btn=document.getElementById('authBtn'),err=document.getElementById('authErr');
+  btn.disabled=true;btn.textContent='Entrando…';err.textContent='';
+  const {data,error}=await sb.auth.signInWithPassword({email:document.getElementById('authEmail').value.trim(),password:document.getElementById('authPass').value});
+  btn.disabled=false;btn.textContent='Entrar';
+  if(error){err.textContent=/invalid/i.test(error.message)?'Correo o contraseña incorrectos':'No se pudo entrar: '+error.message;return;}
+  document.getElementById('authPass').value='';
+  await onLogin(data.user);
+});
+document.getElementById('authSkip').addEventListener('click',()=>{hideAuth();setSync('solo este navegador','');});
+document.getElementById('syncPill').addEventListener('click',()=>{if(cloudReady){cloudSync().then(()=>toast('Sincronizado'));}else if(sb){showAuth();}});
+
+/* ---- ajustes: cuenta ---- */
+function renderCloudCfg(){
+  const st=document.getElementById('cl-status');if(!st)return;
+  const on=cloudReady&&cloudUser;
+  st.innerHTML=!sb?'No se pudo cargar la conexión con la nube (¿sin internet?). Tus datos se guardan en este navegador.'
+    :on?'Sesión iniciada como <b style="color:var(--hi)">'+cloudUser.email+'</b>.<br>Tus datos se guardan en la nube y se sincronizan al abrir el panel o volver a él.'
+    :'No has iniciado sesión: tus datos solo se guardan en este navegador.';
+  document.getElementById('cl-login').style.display=on||!sb?'none':'';
+  document.getElementById('cl-logout').style.display=on?'':'none';
+  document.getElementById('cl-sync').style.display=on?'':'none';
+}
+document.getElementById('cl-login').addEventListener('click',showAuth);
+document.getElementById('cl-sync').addEventListener('click',()=>cloudSync().then(()=>toast('Sincronizado')));
+document.getElementById('cl-logout').addEventListener('click',()=>{
+  askConfirm('¿Cerrar sesión?','Tus datos siguen guardados en la nube. En este navegador quedará la última copia.','Cerrar sesión').then(async ok=>{
+    if(!ok)return;
+    if(cloudPending||cloudTimer)await pushCloud();
+    await sb.auth.signOut();
+    cloudReady=false;cloudUser=null;setSync('solo este navegador','');showAuth();
+  });
+});
+
+/* ---- ajustes: atajo ---- */
+document.getElementById('at-gen').addEventListener('click',async()=>{
+  if(!cloudReady){toast('Primero inicia sesión');if(sb)showAuth();return;}
+  const ok=await askConfirm('¿Generar clave del atajo?','Si ya tenías un atajo configurado, su clave anterior dejará de funcionar y tendrás que pegar la nueva.','Generar');
+  if(!ok)return;
+  const {data,error}=await sb.rpc('generar_token_atajo');
+  if(error){toast('No se pudo generar la clave');return;}
+  document.getElementById('at-url').textContent=SB_URL+'/rest/v1/rpc/registrar_movimiento';
+  document.getElementById('at-key').textContent=SB_KEY;
+  document.getElementById('at-token').textContent=data;
+  document.getElementById('at-cats').textContent=ATAJO_CATS.join('\n');
+  document.getElementById('at-box').style.display='';
+  document.getElementById('at-note').textContent='Copia estos valores en el atajo siguiendo los pasos. Esta clave no se vuelve a mostrar.';
+});
+document.getElementById('tab-ajustes').addEventListener('click',e=>{
+  const b=e.target.closest('[data-copy]');if(!b)return;
+  const txt=document.getElementById(b.dataset.copy).textContent;
+  try{navigator.clipboard.writeText(txt).then(()=>toast('Copiado')).catch(()=>toast('No se pudo copiar; selecciónalo a mano'));}catch(err){toast('No se pudo copiar; selecciónalo a mano');}
+});
+
+/* ---- sincronizar al volver a la app ---- */
+document.addEventListener('visibilitychange',()=>{
+  if(!cloudReady)return;
+  if(document.visibilityState==='hidden'){if(cloudPending||cloudTimer)pushCloud();}
+  else if(Date.now()-lastCheck>4000)cloudSync();
+});
+window.addEventListener('focus',()=>{if(cloudReady&&Date.now()-lastCheck>4000)cloudSync();});
+window.addEventListener('online',()=>{if(cloudReady)cloudSync();});
+
+/* ---- arranque ---- */
+(async function cloudInit(){
+  if(!window.supabase||!window.supabase.createClient){setSync('solo este navegador','');return;}
+  sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+  const {data:{session}}=await sb.auth.getSession();
+  if(session&&session.user){await onLogin(session.user);}
+  else{setSync('sin sesión','');showAuth();}
+  sb.auth.onAuthStateChange((ev,sess)=>{if(ev==='SIGNED_OUT'){cloudReady=false;}});
+})();
 </script>
 </body>
 </html>
