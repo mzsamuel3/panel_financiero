@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<title>Anotar</title>
+<meta name="theme-color" content="#0a0606">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anotar">
+<link rel="apple-touch-icon" href="icon-anotar.png">
+<link rel="icon" type="image/png" href="icon-anotar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0606;--glass:rgba(46,14,17,.55);--border:rgba(255,255,255,.10);--border-hi:rgba(255,255,255,.22);
+  --hi:#fbeeed;--mid:#c9a3a0;--dim:#8a5f5a;--blue:#c81e3a;--blue-l:#f4685c;--blue-d:#7a1224;--cyan:#ff7849;
+  --green:#34d399;--red:#fb7185;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--hi);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.glow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.glow span{position:absolute;border-radius:50%;filter:blur(80px)}
+.g1{width:380px;height:380px;top:-140px;right:-120px;background:radial-gradient(circle,#7a1224,transparent 68%);opacity:.6}
+.g2{width:300px;height:300px;bottom:-120px;left:-120px;background:radial-gradient(circle,#3f0d14,transparent 70%);opacity:.6}
+.app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top)) 16px calc(110px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+header h1{font-family:'Space Grotesk';font-size:22px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+header h1 .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));box-shadow:0 0 14px var(--cyan)}
+header a{color:var(--mid);font-size:13px;font-weight:600;text-decoration:none;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:14px;padding:4px;margin-bottom:18px}
+.seg button{background:none;border:none;color:var(--mid);font:600 15px 'Inter';padding:11px;border-radius:11px;cursor:pointer}
+.seg button.on{background:linear-gradient(135deg,var(--blue-d),var(--blue));color:#fff}
+.seg button.on.in{background:linear-gradient(135deg,#047857,#10b981)}
+.amount{display:flex;align-items:baseline;justify-content:center;gap:4px;padding:18px 0 22px}
+.amount .cur{font-family:'Space Grotesk';font-size:34px;font-weight:600;color:var(--dim)}
+.amount input{background:none;border:none;outline:none;color:var(--hi);font-family:'Space Grotesk';font-size:54px;font-weight:700;letter-spacing:-.03em;width:100%;max-width:330px;text-align:center;caret-color:var(--cyan)}
+.amount input::placeholder{color:rgba(255,255,255,.18)}
+.lbl{color:var(--dim);font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin:4px 2px 10px}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.chip{background:var(--glass);border:1px solid var(--border);color:var(--hi);border-radius:14px;padding:12px 6px;font:500 13px 'Inter';cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;min-height:68px;justify-content:center;transition:transform .12s}
+.chip .e{font-size:20px;line-height:1}
+.chip:active{transform:scale(.96)}
+.chip.on{border-color:var(--blue-l);background:rgba(200,30,58,.28);box-shadow:0 0 0 1px var(--blue-l) inset}
+.chip.on.in{border-color:var(--green);background:rgba(16,185,129,.2);box-shadow:0 0 0 1px var(--green) inset}
+.desc{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border-hi);color:var(--hi);font:16px 'Inter';padding:14px 15px;border-radius:14px;outline:none}
+.desc:focus{border-color:var(--blue)}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(10,6,6,.92) 30%);}
+.save{display:block;width:100%;max-width:448px;margin:0 auto;border:none;border-radius:16px;padding:17px;font:700 17px 'Space Grotesk';color:#fff;background:linear-gradient(135deg,var(--blue-d),var(--blue));box-shadow:0 10px 30px -10px var(--blue);cursor:pointer}
+.save.in{background:linear-gradient(135deg,#047857,#10b981);box-shadow:0 10px 30px -10px #10b981}
+.save:disabled{opacity:.45}
+.err{color:var(--red);font-size:13.5px;text-align:center;min-height:20px;margin-top:12px}
+.recent{margin-top:22px}
+.recent .row{display:flex;justify-content:space-between;gap:10px;padding:11px 2px;border-top:1px solid var(--border);font-size:13.5px}
+.recent .row .d{color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recent .row .m{font-family:'Space Grotesk';font-weight:600;white-space:nowrap}
+.recent .row .m.in{color:var(--green)}
+.done{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(10,6,6,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .2s}
+.done.show{opacity:1;pointer-events:auto}
+.done .ok{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-size:42px;background:radial-gradient(circle at 35% 30%,#6ee7b7,var(--green));box-shadow:0 0 40px rgba(52,211,153,.6);transform:scale(.6);transition:transform .35s cubic-bezier(.2,1.6,.4,1)}
+.done.show .ok{transform:scale(1)}
+.done .t{font-family:'Space Grotesk';font-size:24px;font-weight:700}
+.done .s{color:var(--mid);font-size:14px}
+.setup{display:none;text-align:center;padding-top:40px}
+.setup p{color:var(--mid);font-size:14.5px;line-height:1.6;margin:12px 0 18px}
+.setup .desc{margin-bottom:12px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="glow"><span class="g1"></span><span class="g2"></span></div>
+<div class="app">
+  <header><h1><span class="dot"></span>Anotar</h1><a href="./">Abrir panel</a></header>
+
+  <div id="form">
+    <div class="seg"><button id="tSale" class="on">Gasto</button><button id="tEntra">Ingreso</button></div>
+    <div class="amount"><span class="cur">$</span><input id="monto" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div>
+    <div class="lbl">Categoría</div>
+    <div class="chips" id="chips"></div>
+    <div class="lbl">Descripción (opcional)</div>
+    <input class="desc" id="desc" type="text" placeholder="¿En qué?" maxlength="120" autocomplete="off" enterkeyhint="done">
+    <div class="err" id="err"></div>
+    <div class="recent" id="recent"></div>
+  </div>
+
+  <div class="setup" id="setup">
+    <div style="font-size:44px">🔑</div>
+    <p>Esta pantalla necesita tu link personal.<br>Ábrela desde el panel en <b>Ajustes → Anotar rápido → Crear mi link</b>.</p>
+    <input class="desc" id="tokIn" type="text" placeholder="…o pega aquí tu clave" autocomplete="off">
+    <button class="save" id="tokSave" style="max-width:none">Guardar clave</button>
+  </div>
+</div>
+<div class="bar" id="bar"><button class="save" id="save" disabled>Guardar</button></div>
+<div class="done" id="done"><div class="ok">✓</div><div class="t" id="doneT"></div><div class="s" id="doneS"></div></div>
+
+<script>
+const SB_URL='https://lafahdrnkqdbtpfzwfht.supabase.co';
+const SB_KEY='sb_publishable_Y75BgtwGsw-YKlPc40hddg_pVJvwwqZ';
+const TK='anotar_token_v1', RK='anotar_recientes_v1';
+const CATS={
+  sale:[['Alimentación','🍔'],['Transporte','🚕'],['Ocio/Otros','🎉'],['Servicios','💡'],['Salud','💊'],['Vivienda','🏠'],['Emprendimiento','💼'],['Deudas/Tarjeta','💳'],['Gastos Fijos','📌']],
+  entra:[['Ingreso/Ventas','💰'],['Liquidación/Cesantías','🏦'],['Ahorro/Reserva','🐷']]
+};
+let tipo='sale', cat='', token='';
+const $=id=>document.getElementById(id);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const digits=v=>(v+'').replace(/[^\d]/g,'');
+const miles=d=>d?d.replace(/\B(?=(\d{3})+(?!\d))/g,'.'):'';
+const cop=n=>'$'+miles(String(Math.round(n)));
+
+/* clave: llega en el link (#t=...) y se guarda en el teléfono */
+(function initToken(){
+  const m=location.hash.match(/t=([a-f0-9]{16,})/i);
+  // la clave se queda en el link a propósito: en el iPhone, el ícono de pantalla de inicio
+  // guarda sus datos aparte de Safari, así que el ícono necesita llevar la clave en su URL
+  if(m)store.set(TK,m[1]);
+  token=store.get(TK)||'';
+  if(token&&!m)history.replaceState(null,'',location.pathname+'#t='+token);
+  $('setup').style.display=token?'none':'block';
+  $('form').style.display=token?'':'none';
+  $('bar').style.display=token?'':'none';
+})();
+$('tokSave').onclick=()=>{const v=$('tokIn').value.trim();if(!/^[a-f0-9]{16,}$/i.test(v)){$('tokIn').style.borderColor='var(--red)';return;}store.set(TK,v);location.replace(location.pathname+'#t='+v);location.reload();};
+
+function renderChips(){
+  $('chips').innerHTML=CATS[tipo].map(([n,e])=>'<button class="chip'+(n===cat?' on'+(tipo==='entra'?' in':''):'')+'" data-c="'+n+'"><span class="e">'+e+'</span>'+n+'</button>').join('');
+}
+function setTipo(t){
+  tipo=t;cat='';
+  $('tSale').className=t==='sale'?'on':'';
+  $('tEntra').className=t==='entra'?'on in':'';
+  $('save').className='save'+(t==='entra'?' in':'');
+  renderChips();validate();
+}
+function validate(){$('save').disabled=!(+digits($('monto').value)>0&&cat);$('save').textContent=cat?'Guardar '+( $('monto').value?'$'+$('monto').value:''):'Elige una categoría';}
+$('tSale').onclick=()=>setTipo('sale');
+$('tEntra').onclick=()=>setTipo('entra');
+$('chips').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;renderChips();validate();};
+$('monto').addEventListener('input',e=>{e.target.value=miles(digits(e.target.value).replace(/^0+/,''));$('err').textContent='';validate();});
+
+function renderRecent(){
+  let r=[];try{r=JSON.parse(store.get(RK)||'[]')}catch(e){}
+  $('recent').innerHTML=r.length?'<div class="lbl">Últimos anotados desde este teléfono</div>'+r.slice(0,6).map(x=>'<div class="row"><span class="d">'+x.f+' · '+x.c+(x.d?' · '+x.d.replace(/</g,'&lt;'):'')+'</span><span class="m'+(x.t==='entra'?' in':'')+'">'+(x.t==='entra'?'+':'−')+cop(x.m)+'</span></div>').join(''):'';
+}
+
+$('save').onclick=async()=>{
+  const monto=digits($('monto').value);
+  if(!(+monto>0)||!cat)return;
+  const btn=$('save');btn.disabled=true;btn.textContent='Guardando…';$('err').textContent='';
+  try{
+    const res=await fetch(SB_URL+'/rest/v1/rpc/registrar_movimiento',{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({p_token:token,p_monto:monto,p_categoria:cat,p_descripcion:$('desc').value.trim()||null,p_tipo:tipo})
+    });
+    const body=await res.json().catch(()=>({}));
+    if(!res.ok){
+      const msg=(body&&body.message)||'';
+      $('err').textContent=/clave/i.test(msg)?'La clave ya no es válida. Crea un link nuevo en Ajustes del panel.':'No se pudo guardar ('+(msg||res.status)+'). Intenta de nuevo.';
+      validate();return;
+    }
+    let r=[];try{r=JSON.parse(store.get(RK)||'[]')}catch(e){}
+    const hoy=new Date();
+    r.unshift({f:hoy.getDate()+'/'+(hoy.getMonth()+1),c:cat,d:$('desc').value.trim(),m:+monto,t:tipo});
+    store.set(RK,JSON.stringify(r.slice(0,20)));
+    $('doneT').textContent=(tipo==='entra'?'+':'')+cop(+monto);
+    $('doneS').textContent=cat+' · aparecerá en tu panel';
+    $('done').classList.add('show');
+    if(navigator.vibrate)navigator.vibrate(30);
+    setTimeout(()=>{$('done').classList.remove('show');},1400);
+    $('monto').value='';$('desc').value='';cat='';renderChips();validate();renderRecent();
+  }catch(e){
+    $('err').textContent='Sin conexión. Revisa tu internet e intenta de nuevo.';validate();
+  }
+};
+$('done').onclick=()=>$('done').classList.remove('show');
+$('desc').addEventListener('keydown',e=>{if(e.key==='Enter'){e.target.blur();}});
+
+setTipo('sale');renderRecent();
+if(token)setTimeout(()=>$('monto').focus(),300);
+</script>
+</body>
+</html>

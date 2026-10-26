@@ -554,9 +554,20 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
         </div>
       </div>
       <div class="card pad">
-        <h3>📱 Atajo de iPhone "Anotar gasto"</h3><div class="cap">Registra gastos desde Siri o la pantalla de inicio; aparecen solos en Día a Día al abrir el panel</div>
-        <button class="btn" id="at-gen">🔑 Generar clave del atajo</button>
-        <div class="note" id="at-note">Necesitas haber iniciado sesión. La clave solo se muestra una vez: cópiala al atajo. Si generas otra, la anterior deja de funcionar.</div>
+        <h3>⚡ Anotar rápido desde el iPhone</h3><div class="cap">Una pantallita para anotar gastos en segundos; aparecen solos en Día a Día al abrir el panel</div>
+        <button class="btn" id="at-gen">🔑 Crear mi link de Anotar</button>
+        <div class="note" id="at-note">Necesitas haber iniciado sesión. Si creas un link nuevo, el anterior deja de funcionar.</div>
+        <div id="at-link" style="display:none">
+          <div class="copyrow"><span class="k">Tu link</span><code id="at-linktxt"></code><button class="btn btn-ghost" data-copy="at-linktxt">Copiar</button></div>
+          <div class="btn-row"><a class="btn" id="at-open" target="_blank" rel="noopener" style="text-decoration:none">Abrir Anotar ↗</a></div>
+          <ol class="steps">
+            <li>En el iPhone, toca <b>Abrir Anotar</b> (se abre en Safari).</li>
+            <li>En esa pantalla toca <b>Compartir → Agregar a pantalla de inicio</b>.</li>
+            <li>Listo: te queda un ícono <b>Anotar</b> que abre directo para escribir el gasto. No compartas este link: quien lo tenga puede agregar gastos.</li>
+          </ol>
+        </div>
+        <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--mid);font-size:13px">Avanzado: usar con Siri</summary>
+        <div class="note">Lo más fácil: en Atajos crea uno llamado <b>Anotar gasto</b> con una sola acción <b>Abrir URL</b> y pega tu link. Así "Oye Siri, anotar gasto" te abre la pantalla. Abajo están los datos por si prefieres armar el atajo completo.</div>
         <div id="at-box" style="display:none">
           <div class="copyrow"><span class="k">URL</span><code id="at-url"></code><button class="btn btn-ghost" data-copy="at-url">Copiar</button></div>
           <div class="copyrow"><span class="k">apikey</span><code id="at-key"></code><button class="btn btn-ghost" data-copy="at-key">Copiar</button></div>
@@ -572,6 +583,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
             <li>Listo: di <b>"Oye Siri, anotar gasto"</b> o agrégalo a la pantalla de inicio desde el menú del atajo.</li>
           </ol>
         </div>
+        </details>
       </div>
       <div class="card pad">
         <h3>Parámetros</h3><div class="cap">Afectan cálculos, saludo y alertas</div>
@@ -1601,7 +1613,7 @@ document.getElementById('cl-logout').addEventListener('click',()=>{
 /* ---- ajustes: atajo ---- */
 document.getElementById('at-gen').addEventListener('click',async()=>{
   if(!cloudReady){toast('Primero inicia sesión');if(sb)showAuth();return;}
-  const ok=await askConfirm('¿Generar clave del atajo?','Si ya tenías un atajo configurado, su clave anterior dejará de funcionar y tendrás que pegar la nueva.','Generar');
+  const ok=await askConfirm('¿Crear tu link de Anotar?','Si ya tenías un link o un atajo configurado, dejará de funcionar y tendrás que usar el nuevo.','Crear link');
   if(!ok)return;
   const {data,error}=await sb.rpc('generar_token_atajo');
   if(error){toast('No se pudo generar la clave');return;}
@@ -1610,7 +1622,12 @@ document.getElementById('at-gen').addEventListener('click',async()=>{
   document.getElementById('at-token').textContent=data;
   document.getElementById('at-cats').textContent=ATAJO_CATS.join('\n');
   document.getElementById('at-box').style.display='';
-  document.getElementById('at-note').textContent='Copia estos valores en el atajo siguiendo los pasos. Esta clave no se vuelve a mostrar.';
+  const base=location.href.split('#')[0].split('?')[0].replace(/[^/]*$/,'');
+  const link=base+'anotar.html#t='+data;
+  document.getElementById('at-linktxt').textContent=link;
+  document.getElementById('at-open').href=link;
+  document.getElementById('at-link').style.display='';
+  document.getElementById('at-note').textContent='Tu link está listo. Ábrelo en el iPhone y agrégalo a la pantalla de inicio. Este link no se vuelve a mostrar (si lo pierdes, crea otro).';
 });
 document.getElementById('tab-ajustes').addEventListener('click',e=>{
   const b=e.target.closest('[data-copy]');if(!b)return;
