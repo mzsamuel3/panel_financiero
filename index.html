@@ -399,6 +399,13 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 }
 .qa-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;color:var(--mid);font-size:13px}
 .qa-date{background:rgba(255,255,255,.05);border:1px solid var(--border-hi);color:var(--hi);font:16px 'Inter';padding:9px 12px;border-radius:12px;color-scheme:dark}
+.qa-info{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:13px;padding:12px 14px;margin-bottom:12px;font-size:13.5px;color:var(--mid);line-height:1.5}
+.qa-info b{color:var(--hi)}
+.qa-rem{cursor:pointer}
+.qa-rem input{width:22px;height:22px;accent-color:#c81e3a}
+.cat-banner{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin-bottom:16px;padding:13px 16px;border-radius:15px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.1);color:#fde68a;font:500 14px 'Inter';cursor:pointer}
+.cat-banner b{color:#fff}
+.cat-banner .go{margin-left:auto;font-weight:700;white-space:nowrap}
 .qa-del{width:100%;background:none;border:none;color:var(--red);font:600 14px 'Inter';padding:14px 0 2px;cursor:pointer}
 </style>
 </head>
@@ -422,6 +429,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 
   <!-- RESUMEN -->
   <div class="tab on" id="tab-resumen">
+    <button class="cat-banner" id="catBanner1" style="display:none"></button>
     <div class="greet">
       <div class="kick" id="g-kick">Tu dinero, bajo control</div>
       <div class="hello"><span id="g-hello">Hola</span>, <span class="accent" id="g-name">socio</span></div>
@@ -505,6 +513,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 
   <!-- DIA A DIA -->
   <div class="tab" id="tab-diaadia">
+    <button class="cat-banner" id="catBanner2" style="display:none"></button>
     <div class="eyebrow">Registro diario</div>
     <div class="s-title">Día a Día — mi dinero en cuenta</div>
     <div class="s-sub">Anota cada movimiento: lo que entra y lo que sale. El saldo se recalcula solo en cada línea.</div>
@@ -806,13 +815,16 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 <div class="qa-bg" id="qaBg"><div class="qa" role="dialog" aria-label="Anotar">
   <div class="qa-grab"></div>
   <div class="qa-top"><h3 id="qaTitle">Anotar</h3><button class="qa-x" id="qaClose" aria-label="Cerrar">✕</button></div>
+  <div class="qa-info" id="qaInfo" style="display:none"></div>
   <div class="qa-seg"><button id="qaSale" class="on">Gasto</button><button id="qaEntra">Ingreso</button></div>
   <div class="qa-amt"><span>$</span><input id="qaMonto" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div>
   <div class="qa-chips" id="qaChips"></div>
   <input class="qa-desc" id="qaDesc" type="text" placeholder="Descripción (opcional)" maxlength="120" autocomplete="off" enterkeyhint="done">
   <div class="qa-row"><span>Fecha</span><input type="date" class="qa-date" id="qaFecha"></div>
+  <label class="qa-row qa-rem" id="qaRemember" style="display:none"><span id="qaRememberTxt"></span><input type="checkbox" id="qaRememberChk" checked></label>
   <button class="qa-save" id="qaSave" disabled>Elige una categoría</button>
   <button class="qa-del" id="qaDel" style="display:none">Eliminar movimiento</button>
+  <button class="qa-del" id="qaLater" style="display:none;color:var(--mid)">Después</button>
 </div></div>
 <div class="modal-bg" id="modalBg"><div class="modal">
   <h4 id="modalTitle">Confirmar</h4>
@@ -1082,6 +1094,7 @@ function renderResumen(){
   renderSavings();
   renderDebtMotiv();
   if(typeof renderMobile==="function")renderMobile();
+  if(typeof renderCatBanner==="function")renderCatBanner();
 }
 function savedFromDD(){return state.movements.filter(m=>m.categoria==='Ahorro/Reserva').reduce((a,m)=>a+num(m.sale),0);}
 function savingsTotal(){return num(state.savings.previo)+savedFromDD();}
@@ -1677,10 +1690,21 @@ const qa=(function(){
     $('qaEntra').className=t==='entra'?'on in':'';
     chips();validate();
   }
-  function open(mv){
+  let catMode=false,clave='';
+  function open(mv,opts){
+    opts=opts||{};
     editId=mv?mv.id:null;
-    $('qaTitle').textContent=mv?'Editar movimiento':'Anotar';
-    $('qaDel').style.display=mv?'':'none';
+    catMode=!!(mv&&opts.categorizar);
+    clave=mv&&mv.clave?mv.clave:'';
+    $('qaTitle').textContent=catMode?'¿Qué fue este movimiento?':mv?'Editar movimiento':'Anotar';
+    $('qaDel').style.display=mv&&!catMode?'':'none';
+    $('qaLater').style.display=catMode?'':'none';
+    const quedan=catMode?pendingMovs().length:0;
+    $('qaInfo').style.display=catMode?'':'none';
+    if(catMode)$('qaInfo').innerHTML='Llegó por SMS: <b>'+esc((mv.descripcion||'').replace(/\s*📩$/,''))+'</b><br>'+fechaCorta(mv.fecha)+(quedan>1?' · quedan '+quedan+' por categorizar':'')+'. Elige la categoría:';
+    $('qaRemember').style.display=catMode&&clave?'':'none';
+    $('qaRememberTxt').textContent='Recordar para "'+clave+'" (la próxima vez se categoriza sola)';
+    $('qaRememberChk').checked=true;
     if(mv){
       cat=mv.categoria||'';
       setTipo(num(mv.entra)>0?'entra':'sale',true);
@@ -1694,8 +1718,9 @@ const qa=(function(){
     bg.classList.add('show');
     if(!mv)$('qaMonto').focus();
   }
-  function close(){bg.classList.remove('show');if(document.activeElement)document.activeElement.blur();}
+  function close(){bg.classList.remove('show');catMode=false;if(document.activeElement)document.activeElement.blur();}
 
+  $('qaLater').addEventListener('click',close);
   $('fabAdd').addEventListener('click',()=>open());
   $('qaClose').addEventListener('click',close);
   bg.addEventListener('click',e=>{if(e.target===bg)close();});
@@ -1711,8 +1736,12 @@ const qa=(function(){
     const fecha=$('qaFecha').value||hoyLocal(), desc=$('qaDesc').value.trim();
     if(editId){
       const mv=state.movements.find(x=>x.id===editId);
-      if(mv){mv.fecha=fecha;mv.categoria=cat;mv.descripcion=desc;mv.entra=tipo==='entra'?m:'';mv.sale=tipo==='entra'?'':m;}
-      save();buildDD();close();toast('Movimiento actualizado');
+      if(mv){mv.fecha=fecha;mv.categoria=cat;mv.descripcion=desc;mv.entra=tipo==='entra'?m:'';mv.sale=tipo==='entra'?'':m;if(cat)delete mv.porCategorizar;}
+      const eraCat=catMode;
+      if(eraCat&&clave&&$('qaRememberChk').checked){state.reglasCategoria=state.reglasCategoria||{};state.reglasCategoria[clave.toLowerCase()]=cat;}
+      save();buildDD();close();
+      toast(eraCat?('Listo: '+cat+(clave&&$('qaRememberChk').checked?' · la recordaré para '+clave:'')):'Movimiento actualizado');
+      if(eraCat&&pendingMovs().length)setTimeout(openNextPending,350);
       return;
     }
     state.movements.push({id:uid(),fecha,categoria:cat,descripcion:desc,entra:tipo==='entra'?m:'',sale:tipo==='entra'?'':m});
@@ -1729,8 +1758,23 @@ const qa=(function(){
     });
   });
   if(/[#&]anotar\b/.test(location.hash)||/[?&]anotar\b/.test(location.search))setTimeout(()=>open(),400);
-  return {open,close};
+  return {open,close,isOpen:()=>bg.classList.contains('show')};
 })();
+
+/* ===== MOVIMIENTOS POR CATEGORIZAR (transferencias y SMS sin categoría) ===== */
+function pendingMovs(){return state.movements.filter(m=>m.porCategorizar&&!m.categoria);}
+function openNextPending(){const p=pendingMovs();if(!p.length||qa.isOpen())return;qa.open(p[0],{categorizar:true});}
+function renderCatBanner(){
+  const n=pendingMovs().length;
+  ['catBanner1','catBanner2'].forEach(id=>{
+    const b=document.getElementById(id);if(!b)return;
+    b.style.display=n?'':'none';
+    b.innerHTML='🏷️ <span><b>'+n+'</b> '+(n===1?'movimiento':'movimientos')+' por categorizar</span><span class="go">Categorizar →</span>';
+  });
+}
+document.getElementById('catBanner1').addEventListener('click',openNextPending);
+document.getElementById('catBanner2').addEventListener('click',openNextPending);
+function claveDe(desc){const p=String(desc||'').replace(/\s*(📩|📱)$/,'').split(' · ');return p.length>1?p[1].replace(/\s*⚠️.*$/,'').trim():'';}
 
 /* ===== VERSIÓN MÓVIL: barra inferior, inicio y listas en tarjetas ===== */
 const MQ=window.matchMedia?window.matchMedia('(max-width:640px)'):{matches:false,addEventListener(){}};
@@ -1895,9 +1939,15 @@ async function pullInbox(){
     const mid='in_'+r.id;
     if(state.movements.find(m=>m.id===mid))return;
     const monto=String(Math.round(num(r.monto)));
-    const cat=DDCATS.includes(r.categoria)?r.categoria:'';
+    let cat=DDCATS.includes(r.categoria)?r.categoria:'';
     const desc=[r.descripcion,(!cat&&r.categoria)?r.categoria:''].filter(Boolean).join(' · ')||'Desde el atajo';
-    state.movements.push({id:mid,fecha:r.fecha,categoria:cat,descripcion:desc+(r.origen==='sms'?' 📩':' 📱'),entra:r.tipo==='entra'?monto:'',sale:r.tipo==='entra'?'':monto});
+    const clave=claveDe(r.descripcion);
+    const reglas=state.reglasCategoria||{};
+    if(!cat&&clave&&reglas[clave.toLowerCase()])cat=reglas[clave.toLowerCase()];
+    const mv={id:mid,fecha:r.fecha,categoria:cat,descripcion:desc+(r.origen==='sms'?' 📩':' 📱'),entra:r.tipo==='entra'?monto:'',sale:r.tipo==='entra'?'':monto};
+    if(clave)mv.clave=clave;
+    if(!cat&&r.origen==='sms')mv.porCategorizar=true;
+    state.movements.push(mv);
     nuevos++;
   });
   if(nuevos){
@@ -1905,7 +1955,8 @@ async function pullInbox(){
     const ok=await pushCloud();
     if(!ok)return; // se reintenta en la próxima sincronización; el id evita duplicados
     refreshAll();
-    toast(nuevos===1?'1 movimiento nuevo desde el atajo 📱':nuevos+' movimientos nuevos desde el atajo 📱');
+    toast(nuevos===1?'1 movimiento nuevo de tu banco/atajo':nuevos+' movimientos nuevos de tu banco/atajo');
+    if(pendingMovs().length)setTimeout(openNextPending,700);
   }
   await sb.from('gastos_entrantes').update({procesado:true}).in('id',ids);
 }
