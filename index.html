@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0606">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Finanzas">
+<link rel="apple-touch-icon" href="icon-panel.png">
+<link rel="icon" type="image/png" href="icon-panel.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Panel Financiero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -304,6 +312,94 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
   .inp,.tbl input,.tbl select,input,select,textarea{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){.tab,.pulse{animation:none}}
+/* ===== VERSIÓN MÓVIL ===== */
+.m-only{display:none}
+.bnav{display:none}
+.mrow{display:flex;align-items:center;gap:12px;width:100%;background:none;border:none;border-top:1px solid var(--border);padding:11px 2px;color:var(--hi);font:inherit;text-align:left;cursor:pointer}
+.mrow:first-child{border-top:none}
+.mic{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.06);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.mtx{flex:1;min-width:0;display:flex;flex-direction:column}
+.mt1{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt2{font-size:12px;color:var(--dim);margin-top:1px}
+.mam{font-family:'Space Grotesk';font-weight:600;font-size:15px;white-space:nowrap}
+.mam.in{color:var(--green)}
+.m-bar{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:10px}
+.m-bar>div{height:100%;background:linear-gradient(90deg,#10b981,#6ee7b7);border-radius:999px;transition:width .5s}
+.mdebt{padding:14px 2px;border-top:1px solid var(--border)}
+.mdebt:first-child{border-top:none;padding-top:4px}
+.mdebt.done{opacity:.45}
+.md-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.md-n{font-weight:600;font-size:15px}
+.md-s{font-family:'Space Grotesk';font-weight:700;font-size:16px}
+.md-i{font-size:12px;color:var(--dim);margin-top:7px}
+.more-bg{position:fixed;inset:0;z-index:240;background:rgba(4,2,2,.6);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+.more-bg.show{opacity:1;pointer-events:auto}
+.more{width:100%;background:#170909;border:1px solid var(--border-hi);border-bottom:none;border-radius:24px 24px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:10px;transform:translateY(30px);transition:transform .25s cubic-bezier(.2,.8,.25,1)}
+.more-bg.show .more{transform:none}
+.more .qa-grab{grid-column:1/-1}
+.more button{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--hi);border-radius:16px;padding:18px 12px;font:600 14px 'Inter';display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+.more button span{font-size:24px}
+@media (max-width:640px){
+  .m-only{display:block}
+  .d-only{display:none!important}
+  .nav-links{display:none!important}
+  .nav-in{padding:calc(8px + env(safe-area-inset-top)) 16px 8px!important}
+  nav{background:rgba(10,6,6,.97)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  .fab{display:none}
+  body{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+  .toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+  /* rendimiento: sin desenfoques pesados en el celular */
+  .card{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#1b0b0d!important}
+  .card::before{display:none}
+  .bg-glow .b2,.bg-glow .b3,.bg-glow .b4,.cursor-glow{display:none}
+  .tab{animation-duration:.25s}
+  .greet{margin-bottom:14px}
+  .greet .kick{display:none}
+  .greet .hello{font-size:28px}
+  .greet .date{margin-top:4px;font-size:13px}
+  .m-home .card{margin-bottom:12px}
+  .m-cash{padding:20px 18px}
+  .m-k{color:var(--mid);font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:7px}
+  .m-big{font-family:'Space Grotesk';font-size:40px;font-weight:700;letter-spacing:-.03em;margin-top:6px;line-height:1.05}
+  .m-sub{display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:12.5px;color:var(--mid)}
+  .m-sub b{font-family:'Space Grotesk';font-size:14px;margin-left:4px}
+  .m-sec{padding:16px 16px!important}
+  .m-h{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px;margin-bottom:4px}
+  .m-link{color:var(--blue-l);font-size:13px;font-weight:600;cursor:pointer}
+  .m-k2{color:var(--mid);font-size:12.5px;margin-bottom:10px}
+  .m-k2 b{color:var(--hi);font-family:'Space Grotesk'}
+  .m-big2{font-family:'Space Grotesk';font-size:28px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+  #m-debt-card{cursor:pointer}
+  .pay{padding:10px}
+  .pay .del{font-size:22px;padding:6px 10px}
+  .db-tbl{display:none}
+  body.m-edit-debts .db-tbl{display:block}
+  #m-debts-edit{width:100%;justify-content:center;margin:12px 0 4px}
+  .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:130;background:rgba(14,7,8,.98);border-top:1px solid var(--border);padding:6px 6px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;align-items:center}
+  .bnav button{flex:1;background:none;border:none;color:var(--dim);font:600 10.5px 'Inter';display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer}
+  .bnav button svg{width:23px;height:23px}
+  .bnav button.on{color:var(--hi)}
+  .bnav button.on svg{color:var(--blue-l)}
+  .bnav .bplus{flex:0 0 auto;width:56px;height:56px;margin:-24px 6px 0;border-radius:50%;color:#fff;font-size:32px;font-weight:300;line-height:1;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue-d),var(--blue) 55%,var(--cyan));box-shadow:0 10px 24px -6px rgba(200,30,58,.8),0 0 0 4px #0a0606}
+  .qa{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  html,body{overflow-x:hidden}
+  .eyebrow,.s-sub{display:none}
+  .s-title{font-size:22px;margin-bottom:12px}
+  .kpis{grid-template-columns:1fr 1fr!important;gap:10px;margin:0 0 12px!important}
+  .kpi{padding:13px 14px!important}
+  .kpi .k{font-size:11.5px}
+  .kpi .v{font-size:19px!important;margin-top:4px}
+  .kpi .sub,.kpi .ic{display:none}
+  #m-movs{margin-top:4px}
+  .grid2>*,.hero-grid>*{min-width:0}
+  #dd-months td,#dd-months th{font-size:12.5px;padding-left:6px;padding-right:6px;white-space:nowrap}
+  #sv-table .tbl{min-width:0}
+  #sv-table .tbl td,#sv-table .tbl th{padding-left:8px;padding-right:8px;font-size:13px}
+  .m-big,.m-big2,.mam,.md-s,.m-sub b,.m-k2 b{font-family:'Space Grotesk','Inter',system-ui,sans-serif}
+}
+.qa-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;color:var(--mid);font-size:13px}
+.qa-date{background:rgba(255,255,255,.05);border:1px solid var(--border-hi);color:var(--hi);font:16px 'Inter';padding:9px 12px;border-radius:12px;color-scheme:dark}
+.qa-del{width:100%;background:none;border:none;color:var(--red);font:600 14px 'Inter';padding:14px 0 2px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -331,9 +427,31 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
       <div class="hello"><span id="g-hello">Hola</span>, <span class="accent" id="g-name">socio</span></div>
       <div class="date" id="g-date"></div>
     </div>
-    <div class="banner">👋 Bienvenido a tu panel financiero. Está vacío para que lo llenes con <b>tus</b> finanzas. Empieza en <b>Ajustes</b> poniendo tu nombre, y en <b>Día a Día</b> tu saldo actual; luego agrega tus gastos fijos y deudas. Todo se guarda en tu nube y se sincroniza entre tus dispositivos.</div>
+    <div class="banner d-only"><span>👋 Bienvenido a tu panel financiero. Está vacío para que lo llenes con <b>tus</b> finanzas. Empieza en <b>Ajustes</b> poniendo tu nombre, y en <b>Día a Día</b> tu saldo actual; luego agrega tus gastos fijos y deudas. Todo se guarda en tu nube y se sincroniza entre tus dispositivos.</span></div>
 
-    <div class="hero-grid">
+    <div class="m-only m-home" id="m-home">
+      <div class="card m-cash">
+        <div class="m-k"><span class="pulse"></span> Disponible hoy</div>
+        <div class="m-big num" id="m-cash">$0</div>
+        <div class="m-sub"><span id="m-net"></span><span id="m-rw"></span></div>
+      </div>
+      <div class="card m-sec">
+        <div class="m-h"><span>📅 Pagos de este mes</span><span class="pill" id="m-pay-count"></span></div>
+        <div class="m-k2">Falta por pagar este mes: <b id="m-pay-pend">$0</b> · toca el círculo para marcar</div>
+        <div class="paylist" id="m-pay"></div>
+      </div>
+      <div class="card m-sec" id="m-debt-card">
+        <div class="m-h"><span>🔥 Te falta por pagar en deudas</span><span class="m-link">Ver →</span></div>
+        <div class="m-big2 num" id="m-falta">$0</div>
+        <div class="m-bar"><div id="m-falta-bar" style="width:0%"></div></div>
+        <div class="m-k2" id="m-falta-sub" style="margin:8px 0 0"></div>
+      </div>
+      <div class="card m-sec">
+        <div class="m-h"><span>🧾 Últimos movimientos</span><span class="m-link" id="m-all">Ver todos →</span></div>
+        <div id="m-last"></div>
+      </div>
+    </div>
+    <div class="hero-grid d-only">
       <div class="card pad hero-cash">
         <div class="lbl"><span class="pulse"></span> Dinero real disponible hoy</div>
         <div class="big num" id="h-cash">$0</div>
@@ -369,7 +487,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
         <div id="sv-table" style="margin-top:14px"></div>
       </div>
     </div>
-    <div class="kpis">
+    <div class="kpis d-only">
       <div class="card kpi"><div class="ic">⏳</div><div class="k">Runway</div><div class="v blue num" id="k-runway">—</div><div class="sub">meses en el periodo más pesado</div></div>
       <div class="card kpi"><div class="ic">🎯</div><div class="k">Meta del mes</div><div class="v num" id="k-meta">—</div><div class="sub">para no gastar ahorros</div></div>
       <div class="card kpi"><div class="ic">💳</div><div class="k">Gasto fijo mensual</div><div class="v num" id="k-fixed">—</div><div class="sub" id="k-fixed-sub"></div></div>
@@ -377,7 +495,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
       <div class="card kpi"><div class="ic">📬</div><div class="k">Runway supuesto</div><div class="v blue num" id="k-rwsup">—</div><div class="sub">si te pagan lo que te deben, a tiempo</div></div>
       <div class="card kpi" id="k-falta-card" style="cursor:pointer" title="Toca para ir a Deudas"><div class="ic">🔥</div><div class="k">Te falta por pagar</div><div class="v num" id="k-falta">—</div><div class="sub" id="k-falta-sub"></div></div>
     </div>
-    <div class="card pad" id="k-month-panel" style="display:none;margin-bottom:16px">
+    <div class="card pad d-only" id="k-month-panel" style="display:none;margin-bottom:16px">
       <h3>Detalle de pagos de este mes</h3>
       <div class="cap">Es la misma lista de "Orden de pagos del mes" en Gastos Fijos — lo que marques aquí queda igual allá. Toca el círculo: pendiente → pagado → omitido este mes → pendiente.</div>
       <div class="paylist" id="k-month-list" style="margin-top:12px"></div>
@@ -390,7 +508,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
     <div class="eyebrow">Registro diario</div>
     <div class="s-title">Día a Día — mi dinero en cuenta</div>
     <div class="s-sub">Anota cada movimiento: lo que entra y lo que sale. El saldo se recalcula solo en cada línea.</div>
-    <div class="tips" style="margin-top:0;margin-bottom:22px">
+    <div class="tips d-only" style="margin-top:0;margin-bottom:22px">
       <div class="tip blue"><div class="ti">📝</div><div><div class="th">Cómo registrar</div><div class="tt">Cada fila es un movimiento. Pon la fecha, elige categoría y escribe el monto en <b>Entra</b> o en <b>Sale</b>. El saldo de la derecha se actualiza solo.</div></div></div>
       <div class="tip green"><div class="ti">💡</div><div><div class="th">Liquidación y cesantías</div><div class="tt">Cuando te llegue ese dinero, regístralo aquí en <b>Entra</b> con la categoría "Liquidación/Cesantías". Se sumará a tu saldo y tu runway subirá solo.</div></div></div>
     </div>
@@ -407,13 +525,14 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
           <label class="field"><span>Ver resumen del mes</span><select class="inp" id="dd-mesfiltro"></select></label>
           <div class="dd-addwrap" style="margin-left:auto;align-self:flex-end"><button class="btn" id="dd-add">＋ Agregar movimiento</button></div>
         </div>
-        <div class="tbl-scroll">
+        <div class="tbl-scroll d-only">
           <table class="tbl" id="dd-table">
             <thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th class="num">Entra</th><th class="num">Sale</th><th class="num">Saldo</th><th></th></tr></thead>
             <tbody id="dd-body"></tbody>
           </table>
         </div>
-        <div id="dd-empty" style="color:var(--dim);font-size:13px;text-align:center;padding:20px">Aún no hay movimientos. Toca "Agregar movimiento" para empezar.</div>
+        <div class="m-only" id="m-movs"></div>
+        <div id="dd-empty" class="d-only" style="color:var(--dim);font-size:13px;text-align:center;padding:20px">Aún no hay movimientos. Toca "Agregar movimiento" para empezar.</div>
       </div>
       <div class="card pad">
         <h3>Gasto por categoría <span class="pill" id="dd-cat-mes"></span></h3>
@@ -480,7 +599,9 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
       <div class="note" id="dm-msg" style="color:var(--mid);font-size:13px"></div>
     </div>
     <div class="card pad" style="margin-bottom:16px">
-      <div class="tbl-scroll">
+      <div class="m-only" id="m-debts"></div>
+      <button class="btn btn-ghost m-only" id="m-debts-edit">✏️ Editar deudas en tabla</button>
+      <div class="tbl-scroll db-tbl">
         <table class="tbl" id="db-table">
           <thead><tr><th>Deuda</th><th>Tipo</th><th class="num">Saldo</th><th class="num">Pago/mes (auto)</th><th class="num">Cuotas rest.</th><th class="num">Día</th><th class="num">Recuperable</th><th>Notas</th><th style="text-align:center">Saldada</th><th></th></tr></thead>
           <tbody id="db-body"></tbody>
@@ -573,7 +694,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
     <div class="eyebrow">Configuración</div>
     <div class="s-title">Ajustes y datos</div>
     <div class="s-sub">Parámetros del panel y respaldo de tus datos.</div>
-    <div class="banner">☁️ Con la sesión iniciada, tus datos se guardan en tu nube (Supabase) y los ves igual en el computador y en el celular. Igual puedes <b>Exportar</b> un respaldo de vez en cuando.</div>
+    <div class="banner"><span>☁️ Con la sesión iniciada, tus datos se guardan en tu nube (Supabase) y los ves igual en el computador y en el celular. Igual puedes <b>Exportar</b> un respaldo de vez en cuando.</span></div>
     <div class="grid2">
       <div class="card pad">
         <h3>☁️ Cuenta y nube</h3><div class="cap">Dónde se guardan tus datos</div>
@@ -658,15 +779,19 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
   </form>
   <button class="auth-skip" id="authSkip">Seguir sin conexión (solo este navegador)</button>
 </div></div>
+<div class="bnav" id="bnav"><button data-go="resumen" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button><button data-go="diaadia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h6"/></svg>Movimientos</button><button class="bplus" id="bPlus" aria-label="Anotar">+</button><button data-go="deudas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Deudas</button><button id="bMore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Más</button></div>
+<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span>Gastos fijos</button><button data-go="proyeccion"><span>📈</span>Proyección</button><button data-go="simulador"><span>🚦</span>Simulador</button><button data-go="ajustes"><span>⚙️</span>Ajustes</button></div></div>
 <button class="fab" id="fabAdd" title="Anotar gasto" aria-label="Anotar gasto">+</button>
 <div class="qa-bg" id="qaBg"><div class="qa" role="dialog" aria-label="Anotar">
   <div class="qa-grab"></div>
-  <div class="qa-top"><h3>Anotar</h3><button class="qa-x" id="qaClose" aria-label="Cerrar">✕</button></div>
+  <div class="qa-top"><h3 id="qaTitle">Anotar</h3><button class="qa-x" id="qaClose" aria-label="Cerrar">✕</button></div>
   <div class="qa-seg"><button id="qaSale" class="on">Gasto</button><button id="qaEntra">Ingreso</button></div>
   <div class="qa-amt"><span>$</span><input id="qaMonto" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div>
   <div class="qa-chips" id="qaChips"></div>
   <input class="qa-desc" id="qaDesc" type="text" placeholder="Descripción (opcional)" maxlength="120" autocomplete="off" enterkeyhint="done">
+  <div class="qa-row"><span>Fecha</span><input type="date" class="qa-date" id="qaFecha"></div>
   <button class="qa-save" id="qaSave" disabled>Elige una categoría</button>
+  <button class="qa-del" id="qaDel" style="display:none">Eliminar movimiento</button>
 </div></div>
 <div class="modal-bg" id="modalBg"><div class="modal">
   <h4 id="modalTitle">Confirmar</h4>
@@ -935,6 +1060,7 @@ function renderResumen(){
   ensureMini();if(charts.mini){charts.mini.data.labels=projMonths(6);charts.mini.data.datasets[0].data=projection(0,ddSaldo()).map(r=>r.bal);charts.mini.update();}
   renderSavings();
   renderDebtMotiv();
+  if(typeof renderMobile==="function")renderMobile();
 }
 function savedFromDD(){return state.movements.filter(m=>m.categoria==='Ahorro/Reserva').reduce((a,m)=>a+num(m.sale),0);}
 function savingsTotal(){return num(state.savings.previo)+savedFromDD();}
@@ -1061,8 +1187,9 @@ function buildDD(){
 function buildMonthFilter(){
   const sel=document.getElementById('dd-mesfiltro');
   const set=new Set(state.movements.map(m=>monthKey(m.fecha)).filter(Boolean));
-  const cur=sel.value;const arr=[...set].sort();
-  if(!arr.length)arr.push(new Date().toISOString().slice(0,7));
+  const arr=[...set].sort();
+  if(!arr.length)arr.push(curMonthKey());
+  const cur=sel.value||(arr.includes(curMonthKey())?curMonthKey():arr[arr.length-1]);
   sel.innerHTML=arr.map(m=>'<option '+(m===cur?'selected':'')+'>'+m+'</option>').join('');
 }
 function updateDDderived(){
@@ -1497,40 +1624,58 @@ renderGreeting();
 renderResumen();
 </script>
 <script>
-/* ===== ANOTAR RÁPIDO dentro del panel (botón +) ===== */
-(function(){
-  const QA_CATS={
-    sale:[['Alimentación','🍔'],['Transporte','🚕'],['Ocio/Otros','🎉'],['Servicios','💡'],['Salud','💊'],['Vivienda','🏠'],['Emprendimiento','💼'],['Deudas/Tarjeta','💳'],['Gastos Fijos','📌']],
-    entra:[['Ingreso/Ventas','💰'],['Liquidación/Cesantías','🏦'],['Ahorro/Reserva','🐷']]
-  };
-  let tipo='sale',cat='';
+/* ===== ANOTAR / EDITAR movimiento (hoja que sube desde abajo) ===== */
+const QA_CATS={
+  sale:[['Alimentación','🍔'],['Transporte','🚕'],['Ocio/Otros','🎉'],['Servicios','💡'],['Salud','💊'],['Vivienda','🏠'],['Emprendimiento','💼'],['Deudas/Tarjeta','💳'],['Gastos Fijos','📌']],
+  entra:[['Ingreso/Ventas','💰'],['Liquidación/Cesantías','🏦'],['Ahorro/Reserva','🐷']]
+};
+const CAT_EMOJI={};QA_CATS.sale.concat(QA_CATS.entra).forEach(([n,e])=>CAT_EMOJI[n]=e);
+function hoyLocal(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+const qa=(function(){
+  let tipo='sale',cat='',editId=null;
   const $=id=>document.getElementById(id);
   const bg=$('qaBg');
+  function catList(){
+    const list=QA_CATS[tipo].slice();
+    if(cat&&!list.find(c=>c[0]===cat))list.unshift([cat,CAT_EMOJI[cat]||'🏷️']);
+    return list;
+  }
   function chips(){
-    $('qaChips').innerHTML=QA_CATS[tipo].map(([n,e])=>'<button class="qa-chip'+(n===cat?' on'+(tipo==='entra'?' in':''):'')+'" data-c="'+n+'"><span>'+e+'</span>'+n+'</button>').join('');
+    $('qaChips').innerHTML=catList().map(([n,e])=>'<button class="qa-chip'+(n===cat?' on'+(tipo==='entra'?' in':''):'')+'" data-c="'+n+'"><span>'+e+'</span>'+n+'</button>').join('');
   }
   function validate(){
     const m=onlyDigits($('qaMonto').value);
     const btn=$('qaSave');
     btn.disabled=!(+m>0&&cat);
-    btn.textContent=cat?('Guardar'+(m?' $'+fmtMiles(m):'')):'Elige una categoría';
+    btn.textContent=!cat?'Elige una categoría':(editId?'Guardar cambios':'Guardar'+(m?' $'+fmtMiles(m):''));
     btn.classList.toggle('in',tipo==='entra');
   }
-  function setTipo(t){
-    tipo=t;cat='';
+  function setTipo(t,keepCat){
+    tipo=t;if(!keepCat)cat='';
     $('qaSale').className=t==='sale'?'on':'';
     $('qaEntra').className=t==='entra'?'on in':'';
     chips();validate();
   }
-  function open(){
-    setTipo('sale');$('qaMonto').value='';$('qaDesc').value='';
+  function open(mv){
+    editId=mv?mv.id:null;
+    $('qaTitle').textContent=mv?'Editar movimiento':'Anotar';
+    $('qaDel').style.display=mv?'':'none';
+    if(mv){
+      cat=mv.categoria||'';
+      setTipo(num(mv.entra)>0?'entra':'sale',true);
+      $('qaMonto').value=fmtMiles(num(mv.entra)>0?mv.entra:mv.sale);
+      $('qaDesc').value=mv.descripcion||'';
+      $('qaFecha').value=mv.fecha||hoyLocal();
+    }else{
+      setTipo('sale');$('qaMonto').value='';$('qaDesc').value='';$('qaFecha').value=hoyLocal();
+    }
+    validate();
     bg.classList.add('show');
-    $('qaMonto').focus();
+    if(!mv)$('qaMonto').focus();
   }
-  function close(){bg.classList.remove('show');document.activeElement&&document.activeElement.blur();}
-  function hoyLocal(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function close(){bg.classList.remove('show');if(document.activeElement)document.activeElement.blur();}
 
-  $('fabAdd').addEventListener('click',open);
+  $('fabAdd').addEventListener('click',()=>open());
   $('qaClose').addEventListener('click',close);
   bg.addEventListener('click',e=>{if(e.target===bg)close();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&bg.classList.contains('show'))close();});
@@ -1542,13 +1687,113 @@ renderResumen();
   $('qaSave').addEventListener('click',()=>{
     const m=onlyDigits($('qaMonto').value);
     if(!(+m>0)||!cat)return;
-    state.movements.push({id:uid(),fecha:hoyLocal(),categoria:cat,descripcion:$('qaDesc').value.trim(),entra:tipo==='entra'?m:'',sale:tipo==='entra'?'':m});
-    save();buildDD();
-    close();
+    const fecha=$('qaFecha').value||hoyLocal(), desc=$('qaDesc').value.trim();
+    if(editId){
+      const mv=state.movements.find(x=>x.id===editId);
+      if(mv){mv.fecha=fecha;mv.categoria=cat;mv.descripcion=desc;mv.entra=tipo==='entra'?m:'';mv.sale=tipo==='entra'?'':m;}
+      save();buildDD();close();toast('Movimiento actualizado');
+      return;
+    }
+    state.movements.push({id:uid(),fecha,categoria:cat,descripcion:desc,entra:tipo==='entra'?m:'',sale:tipo==='entra'?'':m});
+    save();buildDD();close();
     toast((tipo==='entra'?'+ ':'✓ ')+'$'+fmtMiles(m)+' en '+cat+' · anotado');
   });
-  if(/[#&]anotar\b/.test(location.hash)||/[?&]anotar\b/.test(location.search))setTimeout(open,400);
+  $('qaDel').addEventListener('click',()=>{
+    if(!editId)return;
+    const id=editId;
+    askConfirm('¿Eliminar este movimiento?','Se quita de Día a Día y tu saldo se recalcula.','Eliminar').then(ok=>{
+      if(!ok)return;
+      state.movements=state.movements.filter(x=>x.id!==id);
+      save();buildDD();close();toast('Movimiento eliminado');
+    });
+  });
+  if(/[#&]anotar\b/.test(location.hash)||/[?&]anotar\b/.test(location.search))setTimeout(()=>open(),400);
+  return {open,close};
 })();
+
+/* ===== VERSIÓN MÓVIL: barra inferior, inicio y listas en tarjetas ===== */
+const MQ=window.matchMedia?window.matchMedia('(max-width:640px)'):{matches:false,addEventListener(){}};
+function isMobile(){return MQ.matches;}
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fechaCorta(f){if(!f)return'';const p=String(f).split('-');return p.length===3?(+p[2])+' '+MONTHN[+p[1]-1]:f;}
+function movRowHTML(m){
+  const isIn=num(m.entra)>0, amt=isIn?num(m.entra):num(m.sale);
+  const t1=m.descripcion||m.categoria||'Movimiento';
+  const t2=[m.categoria&&m.descripcion?m.categoria:'',fechaCorta(m.fecha)].filter(Boolean).join(' · ');
+  return '<button class="mrow" data-mid="'+m.id+'"><span class="mic">'+(CAT_EMOJI[m.categoria]||(isIn?'💰':'🧾'))+'</span><span class="mtx"><span class="mt1">'+esc(t1)+'</span><span class="mt2">'+esc(t2)+'</span></span><span class="mam'+(isIn?' in':'')+'">'+(isIn?'+':'−')+cop(amt).replace(/\s/g,'')+'</span></button>';
+}
+function goTab(t){
+  const b=document.querySelector('.tabbtn[data-tab="'+t+'"]');
+  if(b)b.click();
+  window.scrollTo(0,0);
+}
+function syncBnav(t){
+  const main=['resumen','diaadia','deudas'];
+  document.querySelectorAll('#bnav [data-go]').forEach(b=>b.classList.toggle('on',b.dataset.go===t));
+  document.getElementById('bMore').classList.toggle('on',!main.includes(t));
+}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('.tabbtn');if(b)syncBnav(b.dataset.tab);});
+document.getElementById('bnav').addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');if(g){goTab(g.dataset.go);return;}
+  if(e.target.closest('#bPlus')){qa.open();return;}
+  if(e.target.closest('#bMore'))document.getElementById('moreBg').classList.add('show');
+});
+document.getElementById('moreBg').addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  document.getElementById('moreBg').classList.remove('show');
+  if(g)goTab(g.dataset.go);
+});
+/* en el celular, "Agregar movimiento" abre la hoja en vez de una fila de tabla */
+document.addEventListener('click',e=>{if(isMobile()&&e.target.closest('#dd-add')){e.stopPropagation();e.preventDefault();qa.open();}},true);
+/* tocar un movimiento lo abre para editar */
+document.addEventListener('click',e=>{
+  const r=e.target.closest('.mrow[data-mid]');if(!r)return;
+  const mv=state.movements.find(x=>x.id===r.dataset.mid);if(mv)qa.open(mv);
+});
+document.getElementById('m-pay').addEventListener('click',handlePayClick);
+document.getElementById('m-debt-card').addEventListener('click',()=>goTab('deudas'));
+document.getElementById('m-all').addEventListener('click',()=>goTab('diaadia'));
+document.getElementById('m-debts-edit').addEventListener('click',()=>{
+  const on=document.body.classList.toggle('m-edit-debts');
+  document.getElementById('m-debts-edit').textContent=on?'Listo, ocultar tabla':'✏️ Editar deudas en tabla';
+});
+
+function renderMobile(){
+  if(!isMobile())return;
+  const $=id=>document.getElementById(id);
+  /* inicio */
+  $('m-cash').textContent=cop(ddSaldo());
+  const nm=netThisMonth();
+  $('m-net').innerHTML='Neto del mes <b style="color:'+(nm<0?'var(--red)':nm>0?'var(--green)':'var(--hi)')+'">'+(nm>0?'+':'')+cop(nm)+'</b>';
+  const rw=runwayNow();
+  $('m-rw').innerHTML='Runway <b style="color:'+(rw&&rw<state.runwayMin?'var(--red)':'var(--hi)')+'">'+(rw?rw.toLocaleString('es-CO',{maximumFractionDigits:1})+' meses':'—')+'</b>';
+  const items=payItems(), pend=items.filter(i=>i.status==='pendiente').length;
+  $('m-pay').innerHTML=payListHTML(items);
+  $('m-pay-count').textContent=items.length?(items.length-pend)+'/'+items.length+' pagados':'';
+  $('m-pay-pend').textContent=cop(thisMonthPending());
+  const p=debtProgress();
+  $('m-falta').textContent=cop(p.falta);
+  $('m-falta-bar').style.width=p.pct+'%';
+  $('m-falta-sub').textContent=p.total>0?(p.pct+'% pagado'+(p.libre?' · libre de deudas en '+p.libre:'')):'Sin deudas registradas';
+  const movs=sortedMovs();
+  $('m-last').innerHTML=movs.length?movs.slice(-5).reverse().map(movRowHTML).join(''):'<div class="cap" style="margin:4px 0 0">Aún no hay movimientos. Toca + para anotar el primero.</div>';
+  /* movimientos del mes elegido */
+  const mes=$('dd-mesfiltro').value;
+  const delMes=movs.filter(m=>monthKey(m.fecha)===mes).reverse();
+  $('m-movs').innerHTML=delMes.length?delMes.map(movRowHTML).join(''):'<div class="cap" style="text-align:center;padding:16px 0">Sin movimientos en este mes.</div>';
+  /* deudas en tarjetas */
+  const ds=[...state.debts].sort((a,b)=>(a.cerrada?1:0)-(b.cerrada?1:0));
+  $('m-debts').innerHTML=ds.length?ds.map(d=>{
+    const saldo=num(d.saldo),pag=num(d.pagado),tot=saldo+pag,pct=tot>0?Math.floor(pag/tot*100):0;
+    const c=num(d.cuotas),ct=num(d.cuotasTotal);
+    const fin=c>0?MONTHN[(new Date().getMonth()+c-1+(debtDoneThisMonth(d)?1:0))%12]:'';
+    const info=[ct>0?('cuota '+(ct-c+(debtDoneThisMonth(d)?0:1))+'/'+ct):(c>0?c+' cuotas':''),num(d.pago)>0?cop(num(d.pago)).replace(/\s/g,'')+'/mes':'',fin?'termina '+fin:''].filter(Boolean).join(' · ');
+    return '<div class="mdebt'+(d.cerrada?' done':'')+'"><div class="md-top"><span class="md-n">'+(d.cerrada?'🏁 ':'')+esc(d.nombre||'Deuda')+(d.tipo==='Inversión'?' <span class="pill">inversión</span>':'')+'</span><span class="md-s num">'+cop(saldo)+'</span></div>'
+      +'<div class="m-bar"><div style="width:'+pct+'%"></div></div><div class="md-i">'+(d.cerrada?'Saldada':esc(info)||'Sin cuotas definidas')+(pag>0?' · pagado '+cop(pag).replace(/\s/g,''):'')+'</div></div>';
+  }).join(''):'<div class="cap">Aún no tienes deudas. Agrégalas con "Editar deudas en tabla".</div>';
+}
+if(MQ.addEventListener)MQ.addEventListener('change',()=>{renderResumen();});
+renderMobile();
 
 
 /* ===== NUBE (Supabase): login, guardado sincronizado y bandeja del atajo ===== */
