@@ -546,6 +546,48 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
 .cat-banner b{color:#fff}
 .cat-banner .go{margin-left:auto;font-weight:700;white-space:nowrap}
 .qa-del{width:100%;background:none;border:none;color:var(--red);font:600 14px 'Inter';padding:14px 0 2px;cursor:pointer}
+
+/* ===== Pendientes ===== */
+.pd-wrap{max-width:720px}
+.pd-add{padding:14px!important;margin-bottom:14px}
+.pd-inrow{display:flex;gap:8px}
+.pd-inrow .inp{flex:1;font-size:16px;padding:13px 14px}
+.pd-addbtn{border:none;border-radius:12px;padding:0 18px;font:700 22px 'Inter';color:#fff;background:linear-gradient(135deg,var(--blue-d),var(--blue));cursor:pointer}
+.pd-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pd-mini{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--mid);border-radius:999px;padding:6px 11px;font:600 12.5px 'Inter';cursor:pointer;white-space:nowrap}
+.pd-mini.on{background:rgba(200,30,58,.22);border-color:var(--blue);color:var(--hi)}
+.pd-chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pd-chips::-webkit-scrollbar{display:none}
+.pd-chip{flex:0 0 auto;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--mid);border-radius:999px;padding:8px 13px;font:600 13px 'Inter';cursor:pointer;white-space:nowrap}
+.pd-chip b{margin-left:3px;background:rgba(255,255,255,.12);color:var(--hi);border-radius:999px;padding:1px 7px;font-size:11.5px}
+.pd-chip.on{background:var(--hi);color:#1a0b0b;border-color:var(--hi)}
+.pd-chip.on b{background:rgba(0,0,0,.12);color:#1a0b0b}
+.pd-sec{display:flex;align-items:center;gap:7px;width:100%;background:none;border:none;color:var(--mid);font:700 12px 'Inter';letter-spacing:.06em;text-transform:uppercase;margin:16px 2px 6px;padding:0;text-align:left}
+.pd-sec span{color:var(--dim);font-weight:600}
+.pd-toggle{cursor:pointer}
+.pd-row{display:flex;align-items:flex-start;gap:12px;padding:12px 12px;border:1px solid var(--border);background:rgba(255,255,255,.035);border-radius:14px;margin-bottom:7px}
+.pd-check{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:2px solid var(--border-hi);background:none;color:#fff;font:800 14px 'Inter';cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.pd-check:hover{border-color:var(--green)}
+.pd-row.done .pd-check{background:var(--green);border-color:var(--green);color:#06210f}
+.pd-txt{flex:1;min-width:0;background:none;border:none;color:var(--hi);text-align:left;font:500 15px/1.35 'Inter';cursor:pointer;padding:2px 0;display:flex;flex-direction:column;gap:4px}
+.pd-t{overflow-wrap:anywhere}
+.pd-row.done .pd-t{text-decoration:line-through;color:var(--dim)}
+.pd-star{color:var(--amber);font-weight:700}
+.pd-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--dim)}
+.pd-meta:empty{display:none}
+.pd-meta i{font-style:normal}
+.pd-date{color:var(--mid)}
+.pd-date.today{color:var(--amber);font-weight:600}
+.pd-date.late{color:var(--red);font-weight:600}
+.pd-empty{text-align:center;color:var(--mid);padding:28px 10px;font-size:14px;line-height:1.6}
+.pd-clear{display:block;margin:10px auto 0;background:none;border:none;color:var(--dim);font:600 13px 'Inter';cursor:pointer;text-decoration:underline}
+.pd-two{display:flex;gap:10px;align-items:flex-end}
+.pd-two .s-f{flex:1}
+.pd-starbtn{margin-bottom:13px;border:1px solid var(--border-hi);background:rgba(255,255,255,.04);color:var(--mid);border-radius:12px;padding:13px 14px;font:600 14px 'Inter';cursor:pointer;white-space:nowrap}
+.pd-starbtn.on{border-color:var(--amber);color:var(--amber);background:rgba(251,191,36,.1)}
+.pd-acts{display:flex;justify-content:space-between}
+.pd-acts .s-link{width:auto}
+#m-pend .pd-row{padding:10px 10px;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -560,6 +602,7 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
     <button class="tabbtn" data-tab="deudas">Deudas</button>
     <button class="tabbtn" data-tab="proyeccion">Proyección</button>
     <button class="tabbtn" data-tab="simulador">Simulador</button>
+    <button class="tabbtn c-only" data-tab="pendientes">Pendientes</button>
     <button class="tabbtn" data-tab="ajustes">Ajustes</button>
   </div>
 </div></nav>
@@ -593,6 +636,10 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
         <div class="m-big2 num" id="m-falta">$0</div>
         <div class="m-bar"><div id="m-falta-bar" style="width:0%"></div></div>
         <div class="m-k2" id="m-falta-sub" style="margin:8px 0 0"></div>
+      </div>
+      <div class="card m-sec c-only">
+        <div class="m-h"><span>✅ Pendientes <span class="pill" id="m-pend-count"></span></span><span class="m-link" id="m-pend-all">Ver todo →</span></div>
+        <div id="m-pend"></div>
       </div>
       <div class="card m-sec">
         <div class="m-h"><span>🧾 Últimos movimientos</span><span class="m-link" id="m-all">Ver todos →</span></div>
@@ -847,6 +894,23 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
     </div>
   </div>
 
+  <!-- PENDIENTES -->
+  <div class="tab" id="tab-pendientes">
+    <div class="pd-wrap">
+    <div class="eyebrow">Orden</div>
+    <div class="s-title">Pendientes</div>
+    <div class="s-sub">Anota rápido, toca el círculo cuando lo termines. Lo importante y lo de hoy sale primero.</div>
+    <div class="card pd-add">
+      <div class="pd-inrow"><input class="inp" id="pd-input" placeholder="¿Qué tienes pendiente?" enterkeyhint="done" autocomplete="off"><button class="pd-addbtn" id="pd-addbtn" aria-label="Agregar">+</button></div>
+      <div class="pd-opts" id="pd-addlist"></div>
+      <div class="pd-opts" id="pd-addfecha"></div>
+      <input type="date" id="pd-fechaotra" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none">
+    </div>
+    <div class="pd-chips" id="pd-chips"></div>
+    <div id="pd-body"></div>
+    </div>
+  </div>
+
   <!-- AJUSTES -->
   <div class="tab" id="tab-ajustes">
     <div class="eyebrow">Configuración</div>
@@ -961,7 +1025,8 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
   <button class="auth-skip" id="authSkip">Seguir sin conexión (solo este navegador)</button>
 </div></div>
 <div class="bnav" id="bnav"><button data-go="resumen" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button><button data-go="diaadia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h6"/></svg>Movimientos</button><button class="bplus" id="bPlus" aria-label="Anotar">+</button><button data-go="deudas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Deudas</button><button id="bMore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Más</button></div>
-<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span><i class="c-txt">Gastos fijos</i><i class="s-txt">Mis pagos de cada mes</i></button><button data-go="proyeccion" class="c-only"><span>📈</span>Proyección</button><button data-go="simulador" class="c-only"><span>🚦</span>Simulador</button><button data-go="ajustes" class="c-only"><span>⚙️</span>Ajustes</button><button class="s-only" data-s-act="mensajes"><span>📩</span>Mensajes automáticos</button><button class="s-only" data-s-act="ayuda"><span>❓</span>¿Cómo se usa?</button><button class="s-only s-wide" data-s-act="clave"><span>🔑</span>Cambiar mi contraseña</button><button class="s-only s-wide" data-s-act="salir"><span>🚪</span>Cerrar sesión</button><button class="s-only s-wide s-mini" data-s-act="completo">Modo completo</button></div></div>
+<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span><i class="c-txt">Gastos fijos</i><i class="s-txt">Mis pagos de cada mes</i></button><button data-go="pendientes" class="c-only"><span>✅</span>Pendientes</button><button data-go="proyeccion" class="c-only"><span>📈</span>Proyección</button><button data-go="simulador" class="c-only"><span>🚦</span>Simulador</button><button data-go="ajustes" class="c-only"><span>⚙️</span>Ajustes</button><button class="s-only" data-s-act="mensajes"><span>📩</span>Mensajes automáticos</button><button class="s-only" data-s-act="ayuda"><span>❓</span>¿Cómo se usa?</button><button class="s-only s-wide" data-s-act="clave"><span>🔑</span>Cambiar mi contraseña</button><button class="s-only s-wide" data-s-act="salir"><span>🚪</span>Cerrar sesión</button><button class="s-only s-wide s-mini" data-s-act="completo">Modo completo</button></div></div>
+<div class="qa-bg" id="pdSheet"><div class="qa s-sheet"><div class="qa-grab"></div><div id="pdSheetBody"></div></div></div>
 <div class="qa-bg" id="sSheet"><div class="qa s-sheet"><div class="qa-grab"></div><div id="sSheetBody"></div></div></div>
 <div class="s-onb" id="sOnb"><div class="s-onb-in" id="sOnbBody"></div></div>
 <button class="fab" id="fabAdd" title="Anotar gasto" aria-label="Anotar gasto">+</button>
@@ -1635,6 +1700,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
   if(t==='proyeccion'){buildRC();renderProj();}
   if(t==='simulador')renderSim();
   if(t==='ajustes')fillCfg();
+  if(t==='pendientes'&&window.renderPendientes)renderPendientes();
 });
 
 document.getElementById('dd-body').addEventListener('input',e=>{
@@ -2253,6 +2319,7 @@ renderMobile();
   window.esSencillo = () => state.modo === 'sencillo';
   // ícono, nombre y color de la app según el modo (Android toma el manifest al "Instalar app")
   function iconoSegunModo(sencillo){
+    if(!sencillo && /[?&#]ir=pendientes\b/.test(location.search + location.hash)) return; // ícono propio de Pendientes
     const set = (sel, attr, val) => { const el = document.querySelector(sel); if(el && el.getAttribute(attr) !== val) el.setAttribute(attr, val); };
     set('link[rel="manifest"]', 'href', sencillo ? 'manifest-sencillo.webmanifest' : 'manifest.webmanifest');
     set('link[rel="apple-touch-icon"]', 'href', sencillo ? 'icon-sencillo-180.png' : 'icon-panel.png');
@@ -2489,6 +2556,7 @@ function refreshAll(){
   initIds();
   document.getElementById('dd-inicial').value=fmtMiles(state.cash);
   buildDD();buildGF();buildDB();buildRC();buildMtPlazo();fillCfg();renderGreeting();renderResumen();renderSim();
+  if(window.renderPendientes)renderPendientes();
 }
 
 function cloudAfterSave(){
@@ -2601,6 +2669,7 @@ async function onLogin(user){
     await pullInbox();
     quizasResumenMensual();
     quizasBienvenida();
+    if(window.abrirPendientesSiToca)abrirPendientesSiToca();
   }catch(e){
     cloudReady=false;setSync('sin conexión','err');
     toast('No se pudo conectar a la nube; trabajas en este navegador');
@@ -2711,12 +2780,170 @@ window.addEventListener('online',()=>{if(cloudReady)cloudSync();});
   sb.auth.onAuthStateChange((ev,sess)=>{if(ev==='SIGNED_OUT'){cloudReady=false;}});
 })();
 </script>
+<script>
+/* ===== PENDIENTES: listas rápidas de tareas (se guardan en tu nube con el resto del panel) ===== */
+(function(){
+  const $ = id => document.getElementById(id);
+  const LISTAS = [
+    { id:'personal',  nombre:'Personal',        ico:'🏠' },
+    { id:'prq',       nombre:'PRQ / clientes',  ico:'📐' },
+    { id:'podcast',   nombre:'Podcast',         ico:'🎙️' },
+    { id:'proyectos', nombre:'Mis proyectos',   ico:'💡' },
+  ];
+  const lista = id => LISTAS.find(l => l.id === id) || LISTAS[0];
+  const esc3 = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const hoy = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+  const dias = iso => Math.round((new Date(iso + 'T00:00:00') - new Date(hoy() + 'T00:00:00')) / 86400000);
+  const DIAS_CORTOS = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const cuando = iso => { const n = dias(iso); if(n < 0) return n === -1 ? 'Ayer' : 'Hace ' + (-n) + ' d'; if(n === 0) return 'Hoy'; if(n === 1) return 'Mañana';
+    const d = new Date(iso + 'T00:00:00'); return n < 7 ? DIAS_CORTOS[d.getDay()] + ' ' + d.getDate() : d.getDate() + ' ' + MONTHN[d.getMonth()]; };
+  let filtro = 'todas', verHechas = false, listaNueva = 'personal', fechaNueva = '';
+  try{ filtro = localStorage.getItem('pend_filtro') || 'todas'; }catch(e){}
+  function tareas(){ state.tareas = state.tareas || []; return state.tareas; }
+  const urgente = t => !t.hecha && (t.importante || (t.fecha && dias(t.fecha) <= 0));
+  function ordenar(a, b){
+    const ua = urgente(a) ? 0 : 1, ub = urgente(b) ? 0 : 1; if(ua !== ub) return ua - ub;
+    const pa = a.arriba || '', pb = b.arriba || ''; if(pa !== pb) return pb.localeCompare(pa); // "Poner de primera"
+    const fa = a.fecha || '9999', fb = b.fecha || '9999'; if(fa !== fb) return fa.localeCompare(fb);
+    return (a.orden || 0) - (b.orden || 0);
+  }
+  function guardar(){ save(); pintar(); }
+
+  function fila(t){
+    const l = lista(t.lista);
+    const n = t.fecha ? dias(t.fecha) : null;
+    return `<div class="pd-row${t.hecha?' done':''}">
+      <button class="pd-check" data-pd-check="${t.id}" aria-label="${t.hecha?'Desmarcar':'Marcar hecha'}">${t.hecha?'✓':''}</button>
+      <button class="pd-txt" data-pd-edit="${t.id}"><span class="pd-t">${t.importante && !t.hecha ? '<b class="pd-star">★</b> ' : ''}${esc3(t.texto)}</span>
+        <span class="pd-meta">${filtro==='todas' ? '<i>' + l.ico + ' ' + esc3(l.nombre) + '</i>' : ''}${t.fecha ? `<i class="pd-date ${n<0?'late':n===0?'today':''}">${cuando(t.fecha)}</i>` : ''}${t.nota ? '<i>📝</i>' : ''}</span></button>
+    </div>`;
+  }
+  function pintar(){
+    const box = $('pd-body'); if(!box) return;
+    const all = tareas();
+    const abiertas = all.filter(t => !t.hecha);
+    // chips de listas con contador
+    $('pd-chips').innerHTML = [{ id:'todas', nombre:'Todas', ico:'📋' }].concat(LISTAS).map(l => {
+      const c = l.id === 'todas' ? abiertas.length : abiertas.filter(t => t.lista === l.id).length;
+      return `<button class="pd-chip${filtro===l.id?' on':''}" data-pd-filtro="${l.id}">${l.ico} ${esc3(l.nombre)}${c ? ' <b>' + c + '</b>' : ''}</button>`;
+    }).join('');
+    // selector de lista del campo rápido
+    if(filtro !== 'todas') listaNueva = filtro;
+    $('pd-addlist').innerHTML = LISTAS.map(l => `<button class="pd-mini${listaNueva===l.id?' on':''}" data-pd-lista="${l.id}">${l.ico} ${esc3(l.nombre)}</button>`).join('');
+    $('pd-addfecha').innerHTML = [['','Sin fecha'],[hoy(),'Hoy'],[isoMas(1),'Mañana'],['otra','📅']].map(([v,t]) => `<button class="pd-mini${(fechaNueva===v || (v==='otra' && fechaNueva && fechaNueva!==hoy() && fechaNueva!==isoMas(1)))?' on':''}" data-pd-fecha="${v}">${v==='otra' && fechaNueva && fechaNueva!==hoy() && fechaNueva!==isoMas(1) ? cuando(fechaNueva) : t}</button>`).join('');
+    const vis = all.filter(t => filtro === 'todas' || t.lista === filtro);
+    const ab = vis.filter(t => !t.hecha).sort(ordenar);
+    const urg = ab.filter(urgente), resto = ab.filter(t => !urgente(t));
+    const hechas = vis.filter(t => t.hecha).sort((a,b) => (b.hechaEn||'').localeCompare(a.hechaEn||''));
+    let h = '';
+    if(urg.length) h += `<div class="pd-sec">🔥 Hoy e importantes <span>${urg.length}</span></div>` + urg.map(fila).join('');
+    if(resto.length) h += `<div class="pd-sec">${urg.length ? 'Lo demás' : 'Pendientes'} <span>${resto.length}</span></div>` + resto.map(fila).join('');
+    if(!ab.length) h += `<div class="pd-empty">${all.length ? '🎉 Nada pendiente aquí.' : 'Escribe arriba lo que tienes pendiente y presiona Enter.<br>Toca ★ para marcar lo importante.'}</div>`;
+    if(hechas.length){
+      h += `<button class="pd-sec pd-toggle" id="pd-vh">${verHechas ? '▾' : '▸'} Hechas <span>${hechas.length}</span></button>`;
+      if(verHechas) h += hechas.slice(0, 30).map(fila).join('') + `<button class="pd-clear" id="pd-limpiar">Borrar las hechas${filtro!=='todas' ? ' de esta lista' : ''}</button>`;
+    }
+    box.innerHTML = h;
+    pintarInicio();
+  }
+  function isoMas(n){ const d = new Date(); d.setDate(d.getDate()+n); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function pintarInicio(){
+    const box = $('m-pend'); if(!box) return;
+    const ab = tareas().filter(t => !t.hecha).sort(ordenar);
+    const top = ab.filter(urgente).slice(0, 4);
+    const lst = top.length ? top : ab.slice(0, 3);
+    $('m-pend-count').textContent = ab.length ? ab.length + ' pendiente' + (ab.length>1?'s':'') : '';
+    box.innerHTML = lst.length ? lst.map(fila).join('') : '<div class="cap" style="margin:4px 0 0">Nada pendiente 🎉 Toca "Ver todo" para anotar.</div>';
+  }
+  window.renderPendientes = pintar;
+
+  function agregar(){
+    const inp = $('pd-input'); const texto = inp.value.trim(); if(!texto) return;
+    const min = tareas().reduce((a,t) => Math.min(a, t.orden || 0), 0);
+    tareas().push({ id:uid(), lista:listaNueva, texto, hecha:false, importante:false, fecha:fechaNueva || '', creada:new Date().toISOString(), orden:min - 1 });
+    inp.value = ''; guardar(); inp.focus();
+    toast('Anotado en ' + lista(listaNueva).nombre);
+  }
+  $('pd-input').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); agregar(); } });
+  $('pd-addbtn').addEventListener('click', agregar);
+
+  function marcar(id){
+    const t = tareas().find(x => x.id === id); if(!t) return;
+    t.hecha = !t.hecha; t.hechaEn = t.hecha ? new Date().toISOString() : '';
+    if(navigator.vibrate && t.hecha) navigator.vibrate(15);
+    guardar();
+    if(t.hecha) toast('✓ Hecho: ' + (t.texto.length > 28 ? t.texto.slice(0,28) + '…' : t.texto));
+  }
+  function editar(id){
+    const t = tareas().find(x => x.id === id); if(!t) return;
+    const bg = $('pdSheet');
+    $('pdSheetBody').innerHTML = `<div class="s-h">Editar pendiente</div>
+      <label class="s-f"><span>¿Qué hay que hacer?</span><textarea class="inp" id="peTexto" rows="2">${esc3(t.texto)}</textarea></label>
+      <div class="s-f"><span>Lista</span><div class="pd-opts">${LISTAS.map(l => `<button class="pd-mini${t.lista===l.id?' on':''}" data-pe-lista="${l.id}">${l.ico} ${esc3(l.nombre)}</button>`).join('')}</div></div>
+      <div class="pd-two"><label class="s-f"><span>Fecha <i>(opcional)</i></span><input type="date" class="inp" id="peFecha" value="${t.fecha||''}"></label>
+      <button class="pd-starbtn${t.importante?' on':''}" id="peStar">★ Importante</button></div>
+      <label class="s-f"><span>Nota <i>(opcional)</i></span><textarea class="inp" id="peNota" rows="2" placeholder="Detalles, links, a quién llamar…">${esc3(t.nota||'')}</textarea></label>
+      <button class="s-btn" id="peOk">Guardar</button>
+      <div class="pd-acts"><button class="s-link" id="peTop">⬆ Poner de primera</button><button class="s-link danger" id="peDel">Eliminar</button></div>`;
+    let lst = t.lista, imp = !!t.importante;
+    bg.classList.add('show');
+    $('pdSheetBody').querySelectorAll('[data-pe-lista]').forEach(b => b.onclick = () => { lst = b.dataset.peLista; $('pdSheetBody').querySelectorAll('[data-pe-lista]').forEach(x => x.classList.toggle('on', x === b)); });
+    $('peStar').onclick = () => { imp = !imp; $('peStar').classList.toggle('on', imp); };
+    const cerrar = () => bg.classList.remove('show');
+    $('peOk').onclick = () => { const tx = $('peTexto').value.trim(); if(!tx){ toast('Escribe el pendiente'); return; }
+      t.texto = tx; t.lista = lst; t.fecha = $('peFecha').value || ''; t.importante = imp; t.nota = $('peNota').value.trim(); cerrar(); guardar(); };
+    $('peTop').onclick = () => { t.arriba = new Date().toISOString(); t.importante = true; cerrar(); guardar(); toast('Quedó de primera ★'); };
+    $('peDel').onclick = () => { state.tareas = tareas().filter(x => x.id !== t.id); cerrar(); guardar(); toast('Pendiente eliminado'); };
+  }
+  $('pdSheet').addEventListener('click', e => { if(e.target.id === 'pdSheet') e.target.classList.remove('show'); });
+
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-pd-check]'); if(c){ marcar(c.dataset.pdCheck); return; }
+    const ed = e.target.closest('[data-pd-edit]'); if(ed){ editar(ed.dataset.pdEdit); return; }
+    const f = e.target.closest('[data-pd-filtro]'); if(f){ filtro = f.dataset.pdFiltro; try{ localStorage.setItem('pend_filtro', filtro); }catch(_){}; pintar(); return; }
+    const l = e.target.closest('[data-pd-lista]'); if(l){ listaNueva = l.dataset.pdLista; pintar(); $('pd-input').focus(); return; }
+    const fe = e.target.closest('[data-pd-fecha]');
+    if(fe){ const v = fe.dataset.pdFecha;
+      if(v === 'otra'){ const di = $('pd-fechaotra'); try{ di.showPicker(); }catch(_){ di.focus(); di.click(); } }
+      else { fechaNueva = v; pintar(); }
+      return; }
+    if(e.target.closest('#pd-vh')){ verHechas = !verHechas; pintar(); return; }
+    if(e.target.closest('#pd-limpiar')){
+      askConfirm('¿Borrar las tareas hechas?', 'Se eliminan de la lista para que quede limpia.', 'Borrar').then(ok => { if(!ok) return;
+        state.tareas = tareas().filter(t => !(t.hecha && (filtro === 'todas' || t.lista === filtro))); guardar(); });
+      return; }
+    if(e.target.closest('#m-pend-all')) goTab('pendientes');
+  });
+  $('pd-fechaotra').addEventListener('change', e => { fechaNueva = e.target.value || ''; pintar(); });
+
+  /* ícono propio "Pendientes" para anclar en el inicio (abre directo aquí) */
+  const IR = /[?&#]ir=pendientes\b/.test(location.search + location.hash);
+  function iconoPendientes(on){
+    const set = (sel, attr, val) => { const el = document.querySelector(sel); if(el) el.setAttribute(attr, val); };
+    if(on){
+      set('link[rel="manifest"]', 'href', 'manifest-pendientes.webmanifest');
+      set('link[rel="apple-touch-icon"]', 'href', 'icon-pendientes-180.png');
+      set('meta[name="apple-mobile-web-app-title"]', 'content', 'Pendientes');
+      document.title = 'Pendientes';
+    }
+  }
+  window.abrirPendientesSiToca = function(){
+    if(!IR || (typeof esSencillo === 'function' && esSencillo())) return;
+    iconoPendientes(true);
+    goTab('pendientes');
+  };
+  if(IR) iconoPendientes(true);
+  pintar();
+  setTimeout(abrirPendientesSiToca, 0);
+})();
+
+</script>
 <!-- aviso-de-version -->
 <div id="updBanner" style="display:none;position:fixed;left:50%;transform:translateX(-50%);top:calc(12px + env(safe-area-inset-top));z-index:9000;align-items:center;gap:12px;padding:9px 9px 9px 16px;border-radius:999px;background:rgba(20,16,38,.96);border:1px solid rgba(255,255,255,.16);box-shadow:0 14px 40px -10px rgba(0,0,0,.7);color:#fff;font:600 13.5px system-ui,-apple-system,sans-serif;white-space:nowrap;max-width:calc(100vw - 24px)">✨ Hay una versión nueva<button id="updBtn" style="border:none;border-radius:999px;padding:8px 14px;font:700 13px system-ui,-apple-system,sans-serif;color:#fff;background:#c81e3a;cursor:pointer">Actualizar</button></div>
 <script>
 /* Aviso de versión nueva: compara esta versión con version.json (sin caché). */
 (function(){
-  var VERSION = "2026-10-27.5";
+  var VERSION = "2026-10-28.1";
   var avisado = false;
   function revisar(){
     if(avisado || location.protocol === 'file:') return;
