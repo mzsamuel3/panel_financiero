@@ -1,0 +1,29 @@
+{
+  "name": "Mis Finanzas",
+  "short_name": "Mis Finanzas",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c1315",
+  "theme_color": "#0c1315",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon-sencillo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-sencillo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-sencillo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

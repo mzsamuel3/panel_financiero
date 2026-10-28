@@ -2251,11 +2251,22 @@ renderMobile();
   if(/[?&#]modo=completo\b/.test(location.search + location.hash)) lsSet(MODO_KEY, 'completo');
 
   window.esSencillo = () => state.modo === 'sencillo';
+  // ícono, nombre y color de la app según el modo (Android toma el manifest al "Instalar app")
+  function iconoSegunModo(sencillo){
+    const set = (sel, attr, val) => { const el = document.querySelector(sel); if(el && el.getAttribute(attr) !== val) el.setAttribute(attr, val); };
+    set('link[rel="manifest"]', 'href', sencillo ? 'manifest-sencillo.webmanifest' : 'manifest.webmanifest');
+    set('link[rel="apple-touch-icon"]', 'href', sencillo ? 'icon-sencillo-180.png' : 'icon-panel.png');
+    set('link[rel="icon"]', 'href', sencillo ? 'icon-sencillo-192.png' : 'icon-panel.png');
+    set('meta[name="apple-mobile-web-app-title"]', 'content', sencillo ? 'Mis Finanzas' : 'Finanzas');
+    set('meta[name="theme-color"]', 'content', sencillo ? '#0c1315' : '#0a0606');
+    lsSet('pf_modo_actual', sencillo ? 'sencillo' : null);
+  }
+  if(lsGet('pf_modo_actual') === 'sencillo' || lsGet(MODO_KEY) === 'sencillo') iconoSegunModo(true);
   window.aplicarModo = function(){
     const pedido = lsGet(MODO_KEY);
     if(pedido && state.modo !== pedido){ state.modo = pedido; lsSet(MODO_KEY, null); save(); }
     document.body.classList.toggle('sencillo', esSencillo());
-    const tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content', esSencillo() ? '#0c1315' : '#0a0606');
+    iconoSegunModo(esSencillo());
   };
   const esc2 = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const plata = n => cop(n).replace(/\s/g,'');
@@ -2705,7 +2716,7 @@ window.addEventListener('online',()=>{if(cloudReady)cloudSync();});
 <script>
 /* Aviso de versión nueva: compara esta versión con version.json (sin caché). */
 (function(){
-  var VERSION = "2026-10-27.4";
+  var VERSION = "2026-10-27.5";
   var avisado = false;
   function revisar(){
     if(avisado || location.protocol === 'file:') return;
