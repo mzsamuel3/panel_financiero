@@ -247,6 +247,85 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 .qa-save.in{background:linear-gradient(135deg,#047857,#10b981)}
 .qa-save:disabled{opacity:.45}
 
+
+/* ===== MODO SENCILLO ===== */
+.s-only,.s-txt{display:none}
+body.sencillo .s-only{display:block}
+body.sencillo .s-txt{display:inline}
+body.sencillo .c-only,body.sencillo .c-txt{display:none!important}
+.c-txt,.s-txt{font-style:normal}
+body.sencillo .more .s-only{display:flex}
+body.sencillo .more .s-wide{grid-column:1/-1;flex-direction:row;justify-content:center;padding:14px}
+body.sencillo .more .s-mini{background:none;border:none;color:var(--dim);font-size:12px;padding:6px}
+body.sencillo #m-rw,body.sencillo #alertBox,body.sencillo #tab-resumen > .card.pad:not(.bud-card),body.sencillo #m-debts-edit,body.sencillo .db-tbl,body.sencillo #db-add,body.sencillo #tab-deudas .trow-tot,body.sencillo #tab-deudas > .grid2,body.sencillo #dd-inicial,body.sencillo label:has(> #dd-inicial),body.sencillo #bud-res,body.sencillo #syncPill{display:none!important}
+body.sencillo .m-sub{display:none}
+body.sencillo .mt1{font-size:16px}
+body.sencillo .mt2{font-size:13px}
+body.sencillo .mam{font-size:16px}
+body.sencillo .bnav button{font-size:12px}
+body.sencillo .pay .pt{font-size:15px}
+body.sencillo .mdebt{cursor:pointer}
+.s-gasto{margin-top:10px;font-size:14px;color:var(--mid)}
+.s-gasto b{color:var(--hi);font-family:'Space Grotesk','Inter',sans-serif}
+.s-msg-card{display:flex!important;gap:12px;align-items:center;width:100%;text-align:left;padding:15px!important;border:1px dashed rgba(244,104,92,.45)!important;background:rgba(200,30,58,.1)!important;color:var(--hi);font:inherit;cursor:pointer}
+.s-msg-card>span:first-child{font-size:26px}
+.s-msg-card small{display:block;color:var(--mid);font-size:12.5px;margin-top:3px;font-weight:400}
+.s-row{display:flex;align-items:center;gap:12px;width:100%;background:none;border:none;border-top:1px solid var(--border);padding:13px 2px;color:var(--hi);font:inherit;text-align:left;cursor:pointer}
+.s-row:first-child{border-top:none}
+.s-ico{font-size:20px;width:30px;text-align:center}
+.s-rt{flex:1;min-width:0;display:flex;flex-direction:column}
+.s-row b{font-size:16px;font-weight:600}
+.s-row small{color:var(--dim);font-size:13px}
+.s-amt{font-family:'Space Grotesk','Inter',sans-serif;font-weight:600;font-size:16px;white-space:nowrap}
+.s-total{display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;color:var(--mid)}
+.s-total b{color:var(--hi);font-family:'Space Grotesk','Inter',sans-serif;font-size:17px}
+.s-empty{text-align:center;color:var(--mid);padding:18px 6px;font-size:15px;line-height:1.5}
+.s-btn{display:block;width:100%;border:none;border-radius:16px;padding:16px;margin-top:12px;font:700 17px 'Space Grotesk','Inter',sans-serif;color:#fff;background:linear-gradient(135deg,var(--blue-d),var(--blue));cursor:pointer;text-align:center;text-decoration:none}
+.s-btn.wa{background:linear-gradient(135deg,#128c4a,#25d366)}
+.s-link{display:block;width:100%;background:none;border:none;color:var(--mid);font:600 15px 'Inter';padding:13px 0 2px;cursor:pointer}
+.s-link.danger{color:var(--red)}.s-link.ok{color:var(--green)}
+.s-sheet .s-h{font-family:'Space Grotesk','Inter',sans-serif;font-size:21px;font-weight:700;margin:4px 0 14px}
+.s-f{display:flex;flex-direction:column;gap:6px;margin-bottom:13px;font-size:14px;color:var(--mid)}
+.s-f i{color:var(--dim);font-style:normal;font-size:12.5px}
+.s-f .inp{width:100%;font-size:17px;padding:13px 14px}
+.s-big{font-size:22px!important;font-family:'Space Grotesk','Inter',sans-serif}
+.s-hint{color:var(--green);font-size:14px;min-height:18px}
+.s-p{color:var(--mid);font-size:15px;line-height:1.55;margin:0 0 12px}
+.s-p b{color:var(--hi)}
+.s-tip{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--border);font-size:14.5px;color:var(--mid);line-height:1.45}
+.s-tip:first-of-type{border-top:none}
+.s-tip>span{font-size:22px}
+.s-tip b{color:var(--hi)}
+.s-onb{position:fixed;inset:0;z-index:260;background:#120708;display:none;overflow-y:auto}
+.s-onb.show{display:block}
+.s-onb-in{max-width:460px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));min-height:100%;display:flex;flex-direction:column}
+.s-dots{display:flex;gap:6px;justify-content:center;margin-bottom:26px}
+.s-dots span{width:28px;height:5px;border-radius:9px;background:rgba(255,255,255,.12)}
+.s-dots span.on{background:var(--blue-l)}
+.s-emoji{font-size:46px;text-align:center}
+.s-q{font-family:'Space Grotesk','Inter',sans-serif;font-size:26px;font-weight:700;text-align:center;margin:10px 0 10px;line-height:1.2}
+.s-onb .s-p{text-align:center}
+.s-onb .inp{width:100%;font-size:18px;padding:14px}
+.s-amount{display:flex;align-items:baseline;justify-content:center;gap:4px;margin:10px 0}
+.s-amount span{font-family:'Space Grotesk','Inter',sans-serif;font-size:32px;color:var(--dim)}
+.s-amount input{background:none;border:none;outline:none;color:var(--hi);font-family:'Space Grotesk','Inter',sans-serif;font-size:44px;font-weight:700;width:100%;max-width:300px;text-align:center;border-bottom:2px solid var(--border-hi)}
+.s-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0 14px}
+.s-chip{background:rgba(255,255,255,.05);border:1px solid var(--border-hi);color:var(--hi);border-radius:999px;padding:10px 14px;font:500 14.5px 'Inter';cursor:pointer}
+.s-chip.on{background:rgba(200,30,58,.3);border-color:var(--blue-l)}
+.s-chip.s-grande{flex:1;padding:16px;font-size:17px;font-weight:700;border-radius:16px}
+.s-two{display:flex;gap:10px;margin:8px 0 16px}
+.s-line{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.s-line .inp{flex:1;min-width:0;font-size:16px!important;padding:12px!important}
+.s-line .money{max-width:42%}
+.s-debt{border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:10px}
+.s-debt>.inp{margin-bottom:8px}
+.s-debt .s-line{margin-bottom:0}
+.s-debt .s-line input[type=number]{max-width:26%}
+.s-x{background:none;border:none;color:var(--dim);font-size:18px;padding:6px;cursor:pointer}
+.s-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;padding-top:24px}
+.s-nav .s-btn{width:auto;flex:1;margin:0}
+.s-nav .s-link{width:auto;padding:12px 10px}
+
 /* ===== nube: login + estado de sincronización ===== */
 .sync-pill{font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--mid);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dim)}
@@ -476,6 +555,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
         <div class="m-k"><span class="pulse"></span> Disponible hoy</div>
         <div class="m-big num" id="m-cash">$0</div>
         <div class="m-sub"><span id="m-net"></span><span id="m-rw"></span></div>
+        <div class="s-only s-gasto" id="s-gasto-mes"></div>
       </div>
       <div class="card m-sec">
         <div class="m-h"><span>📅 Pagos de este mes</span><span class="pill" id="m-pay-count"></span></div>
@@ -492,6 +572,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
         <div class="m-h"><span>🧾 Últimos movimientos</span><span class="m-link" id="m-all">Ver todos →</span></div>
         <div id="m-last"></div>
       </div>
+      <button class="card s-only s-msg-card" data-s-act="mensajes"><span>📩</span><span><b>¿Quieres que tus gastos se anoten solos?</b><small>Toca aquí y pídele a Samuel que te active los mensajes automáticos</small></span></button>
     </div>
     <div class="hero-grid d-only">
       <div class="card pad hero-cash">
@@ -601,7 +682,8 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
     <div class="eyebrow">Lo que pagas sí o sí</div>
     <div class="s-title">Gastos fijos mensuales</div>
     <div class="s-sub">Tus suscripciones y gastos fijos. Marca cada uno como Negocio o Personal. Agrega, edita o borra los que quieras.</div>
-    <div class="grid2">
+    <div class="s-only"><div class="card pad"><div id="s-fijos"></div><button class="s-btn" id="s-fijo-add">＋ Agregar pago</button></div></div>
+    <div class="grid2 c-only">
       <div class="card pad" style="grid-column:1/-1">
         <div class="tbl-scroll">
           <table class="tbl" id="gf-table">
@@ -650,6 +732,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
     <div class="card pad" style="margin-bottom:16px">
       <div class="m-only" id="m-debts"></div>
       <button class="btn btn-ghost m-only" id="m-debts-edit">✏️ Editar deudas en tabla</button>
+      <button class="s-btn s-only" id="s-deuda-add">＋ Agregar deuda</button>
       <div class="tbl-scroll db-tbl">
         <table class="tbl" id="db-table">
           <thead><tr><th>Deuda</th><th>Tipo</th><th class="num">Saldo</th><th class="num">Pago/mes (auto)</th><th class="num">Cuotas rest.</th><th class="num">Día</th><th class="num">Recuperable</th><th>Notas</th><th style="text-align:center">Saldada</th><th></th></tr></thead>
@@ -753,6 +836,8 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
           <button class="btn btn-ghost" id="cl-login">Iniciar sesión</button>
           <button class="btn btn-ghost" id="cl-logout" style="color:var(--red)">Cerrar sesión</button>
         </div>
+        <div class="note">Para compartir la app con alguien (ej. tu mamá): crea su usuario en Supabase y mándale el link con <b>?modo=sencillo</b> al final. Verá solo lo esencial y una bienvenida de 4 pasos.</div>
+        <div class="btn-row"><button class="btn btn-ghost" id="cfg-sencillo">🌱 Probar el modo sencillo aquí</button></div>
       </div>
       <div class="card pad">
         <h3>⚡ Ícono aparte para anotar (opcional)</h3><div class="cap">Para anotar ya tienes el botón <b>+</b> abajo a la derecha del panel. Esto es solo si quieres además un ícono "Anotar" separado en tu pantalla de inicio o usarlo con Siri</div>
@@ -850,7 +935,9 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
   <button class="auth-skip" id="authSkip">Seguir sin conexión (solo este navegador)</button>
 </div></div>
 <div class="bnav" id="bnav"><button data-go="resumen" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button><button data-go="diaadia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h6"/></svg>Movimientos</button><button class="bplus" id="bPlus" aria-label="Anotar">+</button><button data-go="deudas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Deudas</button><button id="bMore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Más</button></div>
-<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span>Gastos fijos</button><button data-go="proyeccion"><span>📈</span>Proyección</button><button data-go="simulador"><span>🚦</span>Simulador</button><button data-go="ajustes"><span>⚙️</span>Ajustes</button></div></div>
+<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span><i class="c-txt">Gastos fijos</i><i class="s-txt">Mis pagos de cada mes</i></button><button data-go="proyeccion" class="c-only"><span>📈</span>Proyección</button><button data-go="simulador" class="c-only"><span>🚦</span>Simulador</button><button data-go="ajustes" class="c-only"><span>⚙️</span>Ajustes</button><button class="s-only" data-s-act="mensajes"><span>📩</span>Mensajes automáticos</button><button class="s-only" data-s-act="ayuda"><span>❓</span>¿Cómo se usa?</button><button class="s-only s-wide" data-s-act="salir"><span>🚪</span>Cerrar sesión</button><button class="s-only s-wide s-mini" data-s-act="completo">Modo completo</button></div></div>
+<div class="qa-bg" id="sSheet"><div class="qa s-sheet"><div class="qa-grab"></div><div id="sSheetBody"></div></div></div>
+<div class="s-onb" id="sOnb"><div class="s-onb-in" id="sOnbBody"></div></div>
 <button class="fab" id="fabAdd" title="Anotar gasto" aria-label="Anotar gasto">+</button>
 <div class="qa-bg" id="qaBg"><div class="qa" role="dialog" aria-label="Anotar">
   <div class="qa-grab"></div>
@@ -1156,6 +1243,7 @@ function renderResumen(){
   renderSavings();
   renderDebtMotiv();
   if(typeof renderMobile==="function")renderMobile();
+  if(typeof renderSencillo==="function")renderSencillo();
   if(typeof renderCatBanner==="function")renderCatBanner();
   if(typeof renderBudget==="function")renderBudget();
 }
@@ -2117,13 +2205,218 @@ function renderMobile(){
     const c=num(d.cuotas),ct=num(d.cuotasTotal);
     const fin=c>0?MONTHN[(new Date().getMonth()+c-1+(debtDoneThisMonth(d)?1:0))%12]:'';
     const info=[ct>0?('cuota '+(ct-c+(debtDoneThisMonth(d)?0:1))+'/'+ct):(c>0?c+' cuotas':''),num(d.pago)>0?cop(num(d.pago)).replace(/\s/g,'')+'/mes':'',fin?'termina '+fin:''].filter(Boolean).join(' · ');
-    return '<div class="mdebt'+(d.cerrada?' done':'')+'"><div class="md-top"><span class="md-n">'+(d.cerrada?'🏁 ':'')+esc(d.nombre||'Deuda')+(d.tipo==='Inversión'?' <span class="pill">inversión</span>':'')+'</span><span class="md-s num">'+cop(saldo)+'</span></div>'
+    return '<div class="mdebt'+(d.cerrada?' done':'')+'" data-debt-id="'+d.id+'"><div class="md-top"><span class="md-n">'+(d.cerrada?'🏁 ':'')+esc(d.nombre||'Deuda')+(d.tipo==='Inversión'?' <span class="pill">inversión</span>':'')+'</span><span class="md-s num">'+cop(saldo)+'</span></div>'
       +'<div class="m-bar"><div style="width:'+pct+'%"></div></div><div class="md-i">'+(d.cerrada?'Saldada':esc(info)||'Sin cuotas definidas')+(pag>0?' · pagado '+cop(pag).replace(/\s/g,''):'')+'</div></div>';
   }).join(''):'<div class="cap">Aún no tienes deudas. Agrégalas con "Editar deudas en tabla".</div>';
 }
 if(MQ.addEventListener)MQ.addEventListener('change',()=>{renderResumen();});
 renderMobile();
 
+
+/* ===== MODO SENCILLO (para compartir con alguien que no es experto) =====
+   Se activa abriendo el link con ?modo=sencillo (queda guardado en su cuenta).
+   Muestra: inicio, anotar, movimientos, deudas, presupuesto y pagos de cada mes, con formularios cortos. */
+(function(){
+  const $ = id => document.getElementById(id);
+  const MODO_KEY = 'pf_modo';
+  const lsGet = k => { try{ return localStorage.getItem(k); }catch(e){ return null; } };
+  const lsSet = (k,v) => { try{ v==null ? localStorage.removeItem(k) : localStorage.setItem(k,v); }catch(e){} };
+  if(/[?&#]modo=sencillo\b/.test(location.search + location.hash)) lsSet(MODO_KEY, 'sencillo');
+  if(/[?&#]modo=completo\b/.test(location.search + location.hash)) lsSet(MODO_KEY, 'completo');
+
+  window.esSencillo = () => state.modo === 'sencillo';
+  window.aplicarModo = function(){
+    const pedido = lsGet(MODO_KEY);
+    if(pedido && state.modo !== pedido){ state.modo = pedido; lsSet(MODO_KEY, null); save(); }
+    document.body.classList.toggle('sencillo', esSencillo());
+  };
+  const esc2 = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const plata = n => cop(n).replace(/\s/g,'');
+  const moneyInput = el => el.addEventListener('input', () => { el.value = fmtMiles(onlyDigits(el.value).replace(/^0+/,'')); });
+
+  /* ---------- hoja genérica ---------- */
+  const hoja = $('sSheet'), hojaBody = $('sSheetBody');
+  function abrirHoja(html){ hojaBody.innerHTML = html; hoja.classList.add('show'); hojaBody.querySelectorAll('.money').forEach(moneyInput); }
+  function cerrarHoja(){ hoja.classList.remove('show'); if(document.activeElement) document.activeElement.blur(); }
+  hoja.addEventListener('click', e => { if(e.target === hoja || e.target.closest('[data-s-cerrar]')) cerrarHoja(); });
+  function refrescar(){ save(); buildGF(); buildDB(); buildDD(); renderResumen(); pintarFijos(); }
+
+  /* ---------- pagos de cada mes (gastos fijos) ---------- */
+  function pintarFijos(){
+    const box = $('s-fijos'); if(!box) return;
+    const mk = curMonthKey();
+    const fijos = [...state.fixed].sort((a,b) => (num(a.dia)||99) - (num(b.dia)||99));
+    const total = fijos.reduce((a,f) => a + num(f.monto), 0);
+    box.innerHTML = (fijos.length ? fijos.map(f => {
+      const st = gfStatus(f, mk);
+      return `<button class="s-row" data-s-fijo="${f.id}"><span class="s-ico">${st==='pagado'?'✅':'📌'}</span><span class="s-rt"><b>${esc2(f.concepto||'Pago')}</b><small>${num(f.dia) ? 'Día ' + num(f.dia) + ' de cada mes' : 'Cada mes'}${st==='pagado' ? ' · ya pagado este mes' : ''}</small></span><span class="s-amt">${plata(num(f.monto))}</span></button>`;
+    }).join('') : '<div class="s-empty">Aún no tienes pagos fijos.<br>Agrega lo que pagas cada mes: arriendo, servicios, celular…</div>')
+      + (fijos.length ? `<div class="s-total"><span>Total al mes</span><b>${plata(total)}</b></div>` : '');
+  }
+  function formFijo(f){
+    abrirHoja(`<div class="s-h">${f ? 'Editar pago' : 'Nuevo pago de cada mes'}</div>
+      <label class="s-f"><span>¿Qué es?</span><input class="inp" id="sfNombre" placeholder="Ej: Arriendo, Luz, Celular" value="${esc2(f ? f.concepto : '')}"></label>
+      <label class="s-f"><span>¿Cuánto pagas?</span><input class="inp money s-big" id="sfMonto" inputmode="numeric" placeholder="0" value="${f ? fmtMiles(f.monto) : ''}"></label>
+      <label class="s-f"><span>¿Qué día del mes lo pagas? <i>(opcional)</i></span><input class="inp" id="sfDia" type="number" min="1" max="31" inputmode="numeric" placeholder="Ej: 5" value="${f && num(f.dia) ? num(f.dia) : ''}"></label>
+      <button class="s-btn" id="sfOk">Guardar</button>
+      ${f ? '<button class="s-link danger" id="sfDel">Eliminar este pago</button>' : ''}
+      <button class="s-link" data-s-cerrar>Cancelar</button>`);
+    $('sfOk').onclick = () => {
+      const nombre = $('sfNombre').value.trim(), monto = onlyDigits($('sfMonto').value), dia = String(Math.min(31, Math.max(0, num($('sfDia').value))) || '');
+      if(!nombre || !(+monto > 0)){ toast('Escribe el nombre y cuánto pagas'); return; }
+      if(f){ f.concepto = nombre; f.monto = monto; f.dia = dia; }
+      else state.fixed.push({ id:uid(), tipo:'Personal', concepto:nombre, monto, dia, notas:'' });
+      cerrarHoja(); refrescar(); toast(f ? 'Pago actualizado' : 'Pago agregado ✓');
+    };
+    if(f) $('sfDel').onclick = () => askConfirm('¿Eliminar "' + (f.concepto||'este pago') + '"?', 'Ya no aparecerá en tus pagos del mes.', 'Eliminar').then(ok => {
+      if(!ok) return; state.fixed = state.fixed.filter(x => x.id !== f.id); cerrarHoja(); refrescar(); toast('Pago eliminado');
+    });
+  }
+  $('s-fijo-add').addEventListener('click', () => formFijo(null));
+  $('s-fijos').addEventListener('click', e => { const b = e.target.closest('[data-s-fijo]'); if(b) formFijo(state.fixed.find(x => x.id === b.dataset.sFijo)); });
+
+  /* ---------- deudas ---------- */
+  function formDeuda(d){
+    abrirHoja(`<div class="s-h">${d ? 'Editar deuda' : 'Nueva deuda'}</div>
+      <label class="s-f"><span>¿A quién o qué le debes?</span><input class="inp" id="sdNombre" placeholder="Ej: Tarjeta, Préstamo, Celular" value="${esc2(d ? d.nombre : '')}"></label>
+      <label class="s-f"><span>¿Cuánto debes todavía?</span><input class="inp money s-big" id="sdSaldo" inputmode="numeric" placeholder="0" value="${d ? fmtMiles(d.saldo) : ''}"></label>
+      <label class="s-f"><span>¿Cuántas cuotas te faltan?</span><input class="inp" id="sdCuotas" type="number" min="1" inputmode="numeric" placeholder="Ej: 6" value="${d && num(d.cuotas) ? num(d.cuotas) : ''}"></label>
+      <label class="s-f"><span>¿Qué día pagas la cuota? <i>(opcional)</i></span><input class="inp" id="sdDia" type="number" min="1" max="31" inputmode="numeric" placeholder="Ej: 15" value="${d && num(d.dia) ? num(d.dia) : ''}"></label>
+      <div class="s-hint" id="sdCuota"></div>
+      <button class="s-btn" id="sdOk">Guardar</button>
+      ${d && !d.cerrada ? '<button class="s-link ok" id="sdFin">🎉 Ya la terminé de pagar</button>' : ''}
+      ${d ? '<button class="s-link danger" id="sdDel">Eliminar esta deuda</button>' : ''}
+      <button class="s-link" data-s-cerrar>Cancelar</button>`);
+    const calc = () => { const s = num(onlyDigits($('sdSaldo').value)), c = num($('sdCuotas').value);
+      $('sdCuota').textContent = s > 0 && c > 0 ? 'Cuota de cada mes: ' + plata(Math.round(s / c)) : ''; };
+    ['sdSaldo','sdCuotas'].forEach(id => $(id).addEventListener('input', calc)); calc();
+    $('sdOk').onclick = () => {
+      const nombre = $('sdNombre').value.trim(), saldo = onlyDigits($('sdSaldo').value), cuotas = Math.max(0, Math.round(num($('sdCuotas').value)));
+      const dia = String(Math.min(31, Math.max(0, num($('sdDia').value))) || '');
+      if(!nombre || !(+saldo > 0) || !(cuotas > 0)){ toast('Completa nombre, cuánto debes y las cuotas'); return; }
+      const pago = Math.round(+saldo / cuotas);
+      if(d){ d.nombre = nombre; d.saldo = saldo; d.cuotas = String(cuotas); d.pago = pago; d.dia = dia; if(num(d.cuotasTotal) < cuotas) d.cuotasTotal = String(cuotas); }
+      else state.debts.push({ id:uid(), nombre, tipo:'Deuda', saldo, pago, cuotas:String(cuotas), cuotasTotal:String(cuotas), dia, notas:'' });
+      cerrarHoja(); refrescar(); toast(d ? 'Deuda actualizada' : 'Deuda agregada ✓');
+    };
+    if(d && !d.cerrada) $('sdFin').onclick = () => { d.cerrada = true; d.pagado = num(d.pagado) + num(d.saldo); d.saldo = '0'; d.cuotas = '0'; cerrarHoja(); refrescar(); toast('🎉 ¡Felicitaciones! Una deuda menos'); };
+    if(d) $('sdDel').onclick = () => askConfirm('¿Eliminar "' + (d.nombre||'esta deuda') + '"?', 'Se borra de tu lista de deudas.', 'Eliminar').then(ok => {
+      if(!ok) return; state.debts = state.debts.filter(x => x.id !== d.id); cerrarHoja(); refrescar(); toast('Deuda eliminada');
+    });
+  }
+  $('s-deuda-add').addEventListener('click', () => formDeuda(null));
+  $('m-debts').addEventListener('click', e => {
+    if(!esSencillo()) return;
+    const card = e.target.closest('[data-debt-id]'); if(card) formDeuda(state.debts.find(x => x.id === card.dataset.debtId));
+  });
+
+  /* ---------- mensajes automáticos y ayuda ---------- */
+  const TXT_WA = 'Hola Samuel 👋 ¿Me ayudas a activar los mensajes automáticos de mi app de finanzas? (para que los gastos se anoten solos con los mensajes del banco)';
+  function hojaMensajes(){
+    abrirHoja(`<div class="s-h">📩 Mensajes automáticos</div>
+      <p class="s-p">Con esto, cuando el banco te mande un mensaje de una compra o un pago, <b>se anota solo</b> en tu app. No tienes que escribir nada.</p>
+      <p class="s-p">Se activa una sola vez en tu celular y toma unos 5 minutos. <b>Samuel te ayuda a dejarlo listo.</b></p>
+      <a class="s-btn wa" href="https://wa.me/?text=${encodeURIComponent(TXT_WA)}" target="_blank" rel="noopener">Pedírselo a Samuel por WhatsApp</a>
+      <button class="s-link" data-s-cerrar>Ahora no</button>`);
+  }
+  function hojaAyuda(){
+    abrirHoja(`<div class="s-h">¿Cómo se usa?</div>
+      <div class="s-tip"><span>➕</span><div><b>Anotar un gasto</b><br>Toca el botón <b>+</b> de abajo, escribe cuánto fue y toca en qué lo gastaste.</div></div>
+      <div class="s-tip"><span>✅</span><div><b>Marcar un pago del mes</b><br>En Inicio, en "Pagos de este mes", toca el círculo cuando ya lo pagaste.</div></div>
+      <div class="s-tip"><span>✏️</span><div><b>Corregir algo</b><br>En Movimientos, toca el gasto que quieras cambiar o borrar.</div></div>
+      <div class="s-tip"><span>💳</span><div><b>Deudas</b><br>Ahí ves cuánto te falta. Cada cuota que marques como pagada la hace bajar.</div></div>
+      <button class="s-btn" data-s-cerrar>Entendido</button>`);
+  }
+  document.querySelectorAll('[data-s-act]').forEach(b => b.addEventListener('click', () => {
+    const a = b.dataset.sAct;
+    const bg = $('moreBg'); if(bg) bg.classList.remove('show');
+    if(a === 'mensajes') hojaMensajes();
+    else if(a === 'ayuda') hojaAyuda();
+    else if(a === 'salir'){ const lo = $('cl-logout'); if(lo) lo.click(); }
+    else if(a === 'completo') askConfirm('¿Pasar al modo completo?', 'Verás todas las secciones (proyección, simulador, ajustes). Puedes volver con el link de modo sencillo.', 'Cambiar').then(ok => { if(ok){ state.modo = 'completo'; save(); aplicarModo(); renderResumen(); } });
+  }));
+  $('cfg-sencillo').addEventListener('click', () => askConfirm('¿Activar el modo sencillo?', 'La app mostrará solo lo esencial, con letras más grandes. Para volver: Más → Modo completo.', 'Activar').then(ok => { if(ok){ state.modo = 'sencillo'; save(); aplicarModo(); renderResumen(); goTab('resumen'); } }));
+
+  /* ---------- primera vez: 4 pasos ---------- */
+  const SUGERIDOS = [['Arriendo','🏠'],['Servicios (luz, agua, gas)','💡'],['Internet y celular','📱'],['Administración','🏢'],['Salud / EPS','💊'],['Transporte','🚌'],['Mercado','🛒']];
+  let paso = 0, borrador = null;
+  function iniciarBienvenida(){
+    borrador = { name: state.name || '', cash: num(state.cash) ? String(num(state.cash)) : '', fijos: [], deudas: [], tieneDeudas: null };
+    paso = 0; pintarPaso(); $('sOnb').classList.add('show');
+  }
+  function pintarPaso(){
+    const box = $('sOnbBody'); const total = 4;
+    const dots = `<div class="s-dots">${[0,1,2,3].map(i => `<span class="${i<=paso?'on':''}"></span>`).join('')}</div>`;
+    let h = '';
+    if(paso === 0) h = `<div class="s-emoji">👋</div><div class="s-q">¡Hola! ¿Cómo te llamas?</div>
+      <input class="inp s-big" id="obNombre" placeholder="Tu nombre" value="${esc2(borrador.name)}" autocomplete="given-name">`;
+    else if(paso === 1) h = `<div class="s-emoji">💰</div><div class="s-q">¿Cuánta plata tienes hoy?</div><div class="s-p">Lo que tienes en tu cuenta o en efectivo. Si no sabes exacto, pon un aproximado.</div>
+      <div class="s-amount"><span>$</span><input class="money" id="obPlata" inputmode="numeric" placeholder="0" value="${borrador.cash ? fmtMiles(borrador.cash) : ''}"></div>`;
+    else if(paso === 2) h = `<div class="s-emoji">📌</div><div class="s-q">¿Qué pagas cada mes?</div><div class="s-p">Toca lo que pagas y escribe cuánto. Lo que no pagues, déjalo así.</div>
+      <div class="s-chips">${SUGERIDOS.map(([n,e]) => `<button class="s-chip${borrador.fijos.some(f=>f.n===n)?' on':''}" data-ob-fijo="${esc2(n)}">${e} ${esc2(n)}</button>`).join('')}<button class="s-chip" data-ob-fijo="__otro">✏️ Otro</button></div>
+      <div id="obFijos">${borrador.fijos.map((f,i) => `<div class="s-line"><input class="inp" data-ob-n="${i}" value="${esc2(f.n)}" placeholder="¿Qué es?"><input class="inp money" data-ob-m="${i}" inputmode="numeric" placeholder="$ cuánto" value="${f.m ? fmtMiles(f.m) : ''}"><button class="s-x" data-ob-del="${i}">✕</button></div>`).join('')}</div>`;
+    else if(paso === 3) h = `<div class="s-emoji">💳</div><div class="s-q">¿Tienes deudas o cuotas?</div><div class="s-p">Tarjetas, préstamos, algo que estés pagando a cuotas.</div>
+      <div class="s-two"><button class="s-chip s-grande${borrador.tieneDeudas===true?' on':''}" data-ob-deu="si">Sí</button><button class="s-chip s-grande${borrador.tieneDeudas===false?' on':''}" data-ob-deu="no">No</button></div>
+      ${borrador.tieneDeudas ? `<div id="obDeudas">${borrador.deudas.map((d,i) => `<div class="s-debt"><input class="inp" data-od-n="${i}" placeholder="¿Qué es? (Ej: Tarjeta)" value="${esc2(d.n)}"><div class="s-line"><input class="inp money" data-od-s="${i}" inputmode="numeric" placeholder="$ cuánto debes" value="${d.s ? fmtMiles(d.s) : ''}"><input class="inp" data-od-c="${i}" type="number" min="1" inputmode="numeric" placeholder="cuotas" value="${d.c||''}"><button class="s-x" data-od-del="${i}">✕</button></div></div>`).join('')}</div><button class="s-link" id="obMasDeuda">＋ Agregar ${borrador.deudas.length ? 'otra' : 'una'} deuda</button>` : ''}`;
+    box.innerHTML = dots + h + `<div class="s-nav">${paso>0?'<button class="s-link" id="obAtras">Atrás</button>':'<span></span>'}<button class="s-btn" id="obSig">${paso<total-1?'Siguiente':'¡Listo!'}</button></div>`;
+    box.querySelectorAll('.money').forEach(moneyInput);
+    const foco = box.querySelector('#obNombre, #obPlata'); if(foco) setTimeout(() => foco.focus(), 250);
+  }
+  function leerPaso(){
+    if(paso === 0) borrador.name = ($('obNombre').value || '').trim();
+    if(paso === 1) borrador.cash = onlyDigits($('obPlata').value);
+    if(paso === 2){ document.querySelectorAll('[data-ob-n]').forEach(el => { borrador.fijos[+el.dataset.obN].n = el.value.trim(); });
+      document.querySelectorAll('[data-ob-m]').forEach(el => { borrador.fijos[+el.dataset.obM].m = onlyDigits(el.value); }); }
+    if(paso === 3 && borrador.tieneDeudas){ document.querySelectorAll('[data-od-n]').forEach(el => { borrador.deudas[+el.dataset.odN].n = el.value.trim(); });
+      document.querySelectorAll('[data-od-s]').forEach(el => { borrador.deudas[+el.dataset.odS].s = onlyDigits(el.value); });
+      document.querySelectorAll('[data-od-c]').forEach(el => { borrador.deudas[+el.dataset.odC].c = el.value; }); }
+  }
+  $('sOnbBody').addEventListener('click', e => {
+    const t = e.target;
+    const chip = t.closest('[data-ob-fijo]');
+    if(chip){ leerPaso(); const n = chip.dataset.obFijo; const i = borrador.fijos.findIndex(f => f.n === n);
+      if(n === '__otro') borrador.fijos.push({ n:'', m:'' }); else if(i >= 0) borrador.fijos.splice(i,1); else borrador.fijos.push({ n, m:'' });
+      pintarPaso(); const ins = document.querySelectorAll('[data-ob-m]'); if(ins.length) ins[ins.length-1].focus(); return; }
+    const del = t.closest('[data-ob-del]'); if(del){ leerPaso(); borrador.fijos.splice(+del.dataset.obDel,1); pintarPaso(); return; }
+    const deu = t.closest('[data-ob-deu]'); if(deu){ leerPaso(); borrador.tieneDeudas = deu.dataset.obDeu === 'si'; if(borrador.tieneDeudas && !borrador.deudas.length) borrador.deudas.push({ n:'', s:'', c:'' }); pintarPaso(); return; }
+    const dd = t.closest('[data-od-del]'); if(dd){ leerPaso(); borrador.deudas.splice(+dd.dataset.odDel,1); pintarPaso(); return; }
+    if(t.closest('#obMasDeuda')){ leerPaso(); borrador.deudas.push({ n:'', s:'', c:'' }); pintarPaso(); return; }
+    if(t.closest('#obAtras')){ leerPaso(); paso--; pintarPaso(); return; }
+    if(t.closest('#obSig')){
+      leerPaso();
+      if(paso === 0 && !borrador.name){ toast('Escribe tu nombre'); return; }
+      if(paso < 3){ paso++; pintarPaso(); return; }
+      terminarBienvenida();
+    }
+  });
+  function terminarBienvenida(){
+    state.name = borrador.name;
+    if(+borrador.cash > 0 || !num(state.cash)) state.cash = borrador.cash || '0';
+    borrador.fijos.filter(f => f.n && +f.m > 0).forEach(f => state.fixed.push({ id:uid(), tipo:'Personal', concepto:f.n, monto:f.m, dia:'', notas:'' }));
+    if(borrador.tieneDeudas) borrador.deudas.filter(d => d.n && +d.s > 0).forEach(d => {
+      const c = Math.max(1, Math.round(num(d.c) || 1));
+      state.debts.push({ id:uid(), nombre:d.n, tipo:'Deuda', saldo:d.s, pago:Math.round(+d.s / c), cuotas:String(c), cuotasTotal:String(c), dia:'', notas:'' });
+    });
+    state.bienvenida = true;
+    $('sOnb').classList.remove('show');
+    refreshAll(); save();
+    setTimeout(hojaAyuda, 400);
+  }
+  window.quizasBienvenida = function(){
+    aplicarModo();
+    if(esSencillo() && !state.bienvenida) setTimeout(iniciarBienvenida, 300);
+  };
+
+  /* ---------- extras del inicio ---------- */
+  window.renderSencillo = function(){
+    aplicarModo();
+    if(!esSencillo()) return;
+    const mk = curMonthKey();
+    const gasto = state.movements.filter(m => monthKey(m.fecha) === mk).reduce((a,m) => a + num(m.sale), 0);
+    const el = $('s-gasto-mes'); if(el) el.innerHTML = 'Este mes has gastado <b>' + plata(gasto) + '</b>';
+    pintarFijos();
+  };
+})();
 
 /* ===== NUBE (Supabase): login, guardado sincronizado y bandeja del atajo ===== */
 const SB_URL='https://lafahdrnkqdbtpfzwfht.supabase.co';
@@ -2249,6 +2542,7 @@ async function onLogin(user){
     loadAtajoLinks();
     await pullInbox();
     quizasResumenMensual();
+    quizasBienvenida();
   }catch(e){
     cloudReady=false;setSync('sin conexión','err');
     toast('No se pudo conectar a la nube; trabajas en este navegador');
@@ -2364,7 +2658,7 @@ window.addEventListener('online',()=>{if(cloudReady)cloudSync();});
 <script>
 /* Aviso de versión nueva: compara esta versión con version.json (sin caché). */
 (function(){
-  var VERSION = "2026-10-27.1";
+  var VERSION = "2026-10-27.2";
   var avisado = false;
   function revisar(){
     if(avisado || location.protocol === 'file:') return;
