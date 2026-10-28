@@ -144,12 +144,24 @@ h1{font-size:36px;font-weight:700;letter-spacing:-.035em;margin:0;line-height:1.
 .cal-cta{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;margin-bottom:12px;color:var(--mid);font-size:14.5px;text-align:left;width:100%}
 .cal-cta b{color:#fff;font-weight:600}
 .cal-cta .x{margin-left:auto;padding:4px 6px;color:var(--dim);font-size:18px;line-height:1}
-/* fechas al anotar */
-.fechas{pointer-events:auto;max-width:560px;margin:0 auto 8px;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;opacity:0;transform:translateY(8px);transition:.3s var(--spring);pointer-events:none}
-.fechas::-webkit-scrollbar{display:none}
-.bar.abierta .fechas{opacity:1;transform:none;pointer-events:auto}
-.fc{flex:0 0 auto;padding:8px 13px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--mid)}
-.fc.on{background:#fff;color:#000;border-color:#fff}
+/* pastilla de fecha al anotar */
+.fpill{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:8px 11px;border-radius:22px;background:rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);color:#fff;font-size:13.5px;font-weight:600;white-space:nowrap;transition:transform .3s var(--spring),background .2s}
+.fpill svg{width:16px;height:16px;opacity:.85}
+.fpill.vacia{padding:8px 9px;color:var(--mid)}
+.fpill.hoy{background:rgba(255,212,121,.2);color:#ffd479}
+.fpill.auto,.dest.auto{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
+.fpill:active,.dest:active{transform:scale(.9)}
+/* menú al mantener presionado */
+.ctx-bg{position:fixed;inset:0;z-index:15;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
+.ctx-bg.show{opacity:1;pointer-events:auto}
+.row.lift{position:relative;z-index:16;transform:scale(1.03);background:linear-gradient(160deg,#3a3a42,#26262c);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 24px 50px -10px rgba(0,0,0,.9)}
+.ctx{position:fixed;z-index:17;width:230px;border-radius:20px;padding:6px;background:linear-gradient(160deg,rgba(70,70,78,.75),rgba(40,40,46,.7));border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 24px 60px -12px rgba(0,0,0,.9);-webkit-backdrop-filter:blur(40px) saturate(180%);backdrop-filter:blur(40px) saturate(180%);opacity:0;transform:scale(.85);transform-origin:top left;transition:opacity .2s,transform .35s var(--spring);pointer-events:none}
+.ctx.show{opacity:1;transform:none;pointer-events:auto}
+.ctx button{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 12px;border-radius:14px;font-size:16px;text-align:left}
+.ctx button:active{background:rgba(255,255,255,.12)}
+.ctx button+button{border-top:1px solid rgba(255,255,255,.07)}
+.ctx .red{color:#ff6961}
+.ctx span{opacity:.8}
 /* pasos en la hoja */
 .sh{max-height:calc(100vh - 40px - env(safe-area-inset-top));overflow-y:auto;-webkit-overflow-scrolling:touch}
 .pasos{border-radius:18px;background:rgba(255,255,255,.05);padding:2px 14px}
@@ -196,8 +208,9 @@ h1{font-size:36px;font-weight:700;letter-spacing:-.035em;margin:0;line-height:1.
     <nav class="seg glass" id="tabs"></nav>
     <div id="lista"></div>
   </div>
-  <div class="bar" id="bar"><div class="fechas" id="fechas"></div><input type="date" class="f-in" id="fOtra"><form class="bar-in" id="addForm">
+  <div class="bar" id="bar"><form class="bar-in" id="addForm">
     <button type="button" class="dest" id="dest"></button>
+    <button type="button" class="fpill vacia" id="fpill" aria-label="Fecha"></button>
     <input id="nuevo" placeholder="Anotar algo…" autocomplete="off" enterkeyhint="send">
     <button class="send" id="send" aria-label="Agregar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
   </form></div>
@@ -205,6 +218,7 @@ h1{font-size:36px;font-weight:700;letter-spacing:-.035em;margin:0;line-height:1.
 
 <div class="sh-bg" id="sheet"><div class="sh"><div class="grab"></div><div id="sheetBody"></div></div></div>
 <div class="toast glass" id="toast"></div>
+<div class="ctx-bg" id="ctxBg"></div><div class="ctx" id="ctx"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
@@ -328,7 +342,6 @@ function pintar(){
   }
   $('lista').innerHTML=h;recien=null;
   if(filtro!=='todo'&&filtro!=='hoy')dest=filtro;
-  $('dest').textContent=nom(dest);
   pintarFechas();
   ls.set('pend_cache',tareas);
   const on=$('tabs').querySelector('.on');if(on&&on.scrollIntoView&&!pintar._ya){pintar._ya=1;on.scrollIntoView({inline:'center',block:'nearest'});}
@@ -364,35 +377,37 @@ async function actualizar(t,cambios,silencio){
 }
 
 /* ---------- anotar ---------- */
+const CAL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+function ciclo(){const o=['',hoy(),masDias(hoy(),1)];const v=finDeSemana();if(!o.includes(v))o.push(v);return o;}
 function pintarFechas(){
-  const ops=[['','Sin fecha'],[hoy(),'Hoy'],[masDias(hoy(),1),'Mañana'],[finDeSemana(),'Esta semana']];
-  const otra=fechaNueva&&!ops.some(o=>o[0]===fechaNueva);
-  $('fechas').innerHTML=ops.map(([v,n])=>`<button type="button" class="fc glass${fechaNueva===v?' on':''}" data-fn="${v}">${n}</button>`).join('')
-    +`<button type="button" class="fc glass${otra?' on':''}" data-fn="otra">${otra?cuando(fechaNueva):'📅 Otra'}</button>`;
+  const p=parsear($('nuevo').value,hoy());
+  const f=p.fecha||fechaNueva,l=p.lista||dest;
+  const fp=$('fpill');
+  fp.innerHTML=f?cuando(f):CAL;
+  fp.className='fpill'+(f?'':' vacia')+(f&&f===hoy()?' hoy':'')+(p.fecha?' auto':'');
+  $('dest').textContent=nom(l);$('dest').classList.toggle('auto',!!p.lista);
 }
-const barra=()=>$('bar').classList.toggle('abierta',document.activeElement===$('nuevo')||!!$('nuevo').value.trim());
-$('nuevo').addEventListener('focus',barra);
-$('nuevo').addEventListener('blur',()=>setTimeout(barra,150));
-$('nuevo').addEventListener('input',()=>{$('send').classList.toggle('on',!!$('nuevo').value.trim());barra();});
-$('fechas').addEventListener('pointerdown',e=>{if(e.target.closest('[data-fn]'))e.preventDefault();});
-$('fechas').addEventListener('click',e=>{
-  const b=e.target.closest('[data-fn]');if(!b)return;
-  if(b.dataset.fn==='otra'){const f=$('fOtra');f.value=fechaNueva||hoy();try{f.showPicker();}catch(_){f.focus();f.click();}return;}
-  fechaNueva=b.dataset.fn;pintarFechas();$('nuevo').focus();
+// tocar las pastillas sin cerrar el teclado
+function tocar(el,fn){
+  el.addEventListener('touchstart',e=>{e.preventDefault();fn();},{passive:false});
+  el.addEventListener('click',e=>{e.preventDefault();fn();});
+}
+tocar($('fpill'),()=>{
+  const o=ciclo();fechaNueva=o[(o.indexOf(fechaNueva)+1)%o.length];
+  pintarFechas();if(navigator.vibrate)navigator.vibrate(5);
 });
-$('fOtra').addEventListener('change',e=>{fechaNueva=e.target.value||'';pintarFechas();$('nuevo').focus();});
-$('dest').addEventListener('click',()=>{
+tocar($('dest'),()=>{
   const i=LISTAS.findIndex(l=>l.id===dest);dest=LISTAS[(i+1)%LISTAS.length].id;ls.set('pend_dest',dest);
-  if(filtro!=='todo'&&filtro!=='hoy'){filtro=dest;ls.set('pend_filtro2',filtro);}
-  pintar();$('nuevo').focus();
+  if(filtro!=='todo'&&filtro!=='hoy'){filtro=dest;ls.set('pend_filtro2',filtro);pintar();}else pintarFechas();
 });
+$('nuevo').addEventListener('input',()=>{$('send').classList.toggle('on',!!$('nuevo').value.trim());pintarFechas();});
 $('addForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const crudo=$('nuevo').value.trim();if(!crudo)return;
   const p=parsear(crudo,hoy());
   const fila={lista:p.lista||dest,texto:p.texto,fecha:p.fecha||fechaNueva||null,orden:minOrden()};
   const tmp={id:'tmp'+Date.now(),hecha:false,importante:false,pasos:[],repetir:null,creada:new Date().toISOString(),...fila};
-  tareas.push(tmp);recien=tmp.id;$('nuevo').value='';$('send').classList.remove('on');
+  tareas.push(tmp);recien=tmp.id;$('nuevo').value='';$('send').classList.remove('on');if(filtro!=='hoy')fechaNueva='';
   if(filtro==='hoy'&&!vence(tmp))toast('Anotado en '+nom(tmp.lista)+(tmp.fecha?' · '+cuando(tmp.fecha):''));
   else if(filtro!=='todo'&&filtro!=='hoy'&&tmp.lista!==filtro)toast('Anotado en '+nom(tmp.lista));
   pintar();
@@ -437,25 +452,27 @@ document.addEventListener('click',e=>{
   }
 },true);
 
-/* ---------- reordenar: mantén presionado y arrastra ---------- */
+/* ---------- mantener presionado: menú (eliminar, etc.) · mantener y arrastrar: reordenar ---------- */
 let arr=null;
 document.addEventListener('pointerdown',e=>{
-  const row=e.target.closest('.grp .row');if(!row||e.target.closest('.ck')||e.button>0)return;
-  const y0=e.clientY;
-  arr={row,y0,listo:false,timer:setTimeout(()=>empezarArrastre(row,y0),380)};
+  const row=e.target.closest('#lista .row');if(!row||e.target.closest('.ck')||e.button>0||$('ctx').classList.contains('show'))return;
+  arr={row,y0:e.clientY,listo:false,movio:false,timer:setTimeout(()=>levantar(row),420)};
 });
-function empezarArrastre(row,y0){
+function levantar(row){
   if(!arr||arr.row!==row)return;
-  const grp=row.parentElement,filas=[...grp.children];
-  arr.listo=true;arr.filas=filas;arr.idx=filas.indexOf(row);arr.nuevo=arr.idx;
-  arr.rects=filas.map(r=>r.getBoundingClientRect());arr.alto=arr.rects[arr.idx].height+10;
-  row.classList.add('drag');filas.forEach(r=>{if(r!==row)r.classList.add('mov');});
+  arr.listo=true;
+  const grp=row.parentElement;
+  if(grp.classList.contains('grp')){const filas=[...grp.children];arr.filas=filas;arr.idx=filas.indexOf(row);arr.nuevo=arr.idx;arr.rects=filas.map(r=>r.getBoundingClientRect());arr.alto=arr.rects[arr.idx].height+10;}
   if(navigator.vibrate)navigator.vibrate(15);
+  abrirMenu(row);
 }
 document.addEventListener('pointermove',e=>{
   if(!arr)return;
-  if(!arr.listo){if(Math.abs(e.clientY-arr.y0)>8){clearTimeout(arr.timer);arr=null;}return;}
-  const dy=e.clientY-arr.y0;arr.row.style.setProperty('--dy',dy+'px');
+  const dy=e.clientY-arr.y0;
+  if(!arr.listo){if(Math.abs(dy)>8){clearTimeout(arr.timer);arr=null;}return;}
+  if(!arr.filas)return;
+  if(!arr.movio){if(Math.abs(dy)<12)return;arr.movio=true;cerrarMenu(true);arr.row.classList.add('drag');arr.filas.forEach(r=>{if(r!==arr.row)r.classList.add('mov');});}
+  arr.row.style.setProperty('--dy',dy+'px');
   const centro=arr.rects[arr.idx].top+arr.rects[arr.idx].height/2+dy;
   let n=arr.idx;
   arr.rects.forEach((r,i)=>{const m=r.top+r.height/2;if(i<arr.idx&&centro<m)n=Math.min(n,i);if(i>arr.idx&&centro>m)n=Math.max(n,i);});
@@ -466,7 +483,8 @@ document.addEventListener('touchmove',e=>{if(arr&&arr.listo)e.preventDefault();}
 function soltar(){
   if(!arr)return;clearTimeout(arr.timer);
   const a=arr;arr=null;if(!a.listo)return;
-  sinClick=true;setTimeout(()=>sinClick=false,350);
+  sinClick=true;setTimeout(()=>sinClick=false,400);
+  if(!a.movio)return; // se queda el menú abierto
   a.filas.forEach(r=>{r.style.transform='';r.classList.remove('mov');});a.row.classList.remove('drag');a.row.style.removeProperty('--dy');
   if(a.nuevo===a.idx)return;
   const ids=a.filas.map(r=>r.dataset.id),[mov]=ids.splice(a.idx,1);ids.splice(a.nuevo,0,mov);
@@ -477,6 +495,48 @@ function soltar(){
 }
 document.addEventListener('pointerup',soltar);document.addEventListener('pointercancel',soltar);
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.row'))e.preventDefault();});
+
+let menuRow=null;
+function abrirMenu(row){
+  const t=tareas.find(x=>x.id===row.dataset.id);if(!t)return;
+  menuRow=row;row.classList.add('lift');
+  const m=$('ctx');
+  m.innerHTML=(t.hecha?`<button data-m="volver">Marcar pendiente <span>↺</span></button>`:
+    `<button data-m="imp">${t.importante?'Quitar importante':'Importante'} <span>★</span></button>
+     <button data-m="hoy">Para hoy <span>☀︎</span></button>
+     <button data-m="man">Para mañana <span>→</span></button>`)
+    +`<button data-m="edit">Editar <span>✎</span></button><button data-m="del" class="red">Eliminar <span>🗑</span></button>`;
+  const r=row.getBoundingClientRect(),alto=t.hecha?150:265;
+  const abajo=r.bottom+10+alto<innerHeight-90;
+  m.style.left=Math.max(12,Math.min(r.left+14,innerWidth-242))+'px';
+  m.style.top=(abajo?r.bottom+10:Math.max(12,r.top-alto-10))+'px';
+  m.style.transformOrigin=abajo?'top left':'bottom left';
+  $('ctxBg').classList.add('show');m.classList.add('show');
+}
+function cerrarMenu(dejarFila){
+  $('ctx').classList.remove('show');$('ctxBg').classList.remove('show');
+  if(menuRow&&!dejarFila)menuRow.classList.remove('lift');
+  if(menuRow&&dejarFila)menuRow.classList.remove('lift');
+  menuRow=null;
+}
+$('ctxBg').addEventListener('click',()=>cerrarMenu());
+$('ctx').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-m]');if(!b||!menuRow)return;
+  const t=tareas.find(x=>x.id===menuRow.dataset.id);cerrarMenu();if(!t)return;
+  const a=b.dataset.m;
+  if(a==='imp')actualizar(t,t.importante?{importante:false}:{importante:true,orden:minOrden()});
+  else if(a==='hoy'){actualizar(t,{fecha:hoy()});toast('Para hoy');}
+  else if(a==='man'){actualizar(t,{fecha:masDias(hoy(),1)});toast('Movido a mañana');}
+  else if(a==='volver')actualizar(t,{hecha:false,hecha_en:null});
+  else if(a==='edit')editar(t.id);
+  else if(a==='del')eliminar(t);
+});
+async function eliminar(t){
+  const copia={...t};tareas=tareas.filter(x=>x!==t);pintar();
+  const {error}=await sb.from('tareas').delete().eq('id',t.id);
+  if(error){toast('No se pudo eliminar');cargar();return;}
+  toast('Eliminado','Deshacer',async()=>{const {user_id,...fila}=copia;tareas.push(copia);pintar();const r=await sb.from('tareas').insert(fila);if(r.error){toast('No se pudo recuperar');cargar();}});
+}
 
 /* ---------- hoja ---------- */
 const sheet=$('sheet');let alCerrar=null;
@@ -492,8 +552,8 @@ function editar(id){
     <div class="lbl">Fecha</div><div class="chips" id="eF">${fOps().map(([v,n])=>`<button class="chip${fecha===v?' on':''}" data-ef="${v}">${n}</button>`).join('')}<button class="chip${fecha&&!fOps().some(o=>o[0]===fecha)?' on':''}" data-ef="otra">${fecha&&!fOps().some(o=>o[0]===fecha)?cuando(fecha):'📅 Otra'}</button></div>
     <input type="date" class="f-in" id="eFo">
     <div class="lbl">Repetir</div><div class="chips">${[['','No'],['dia','Cada día'],['semana','Cada semana'],['mes','Cada mes']].map(([v,n])=>`<button class="chip${rep===v?' on':''}" data-er="${v}">${n}</button>`).join('')}</div>
-    <div class="lbl">Pasos${pasos.length?' · '+pasos.filter(x=>x.h).length+'/'+pasos.length:''}</div>
-    <div class="pasos">${pasos.map((x,i)=>`<div class="paso-r${x.h?' ok':''}"><button class="pck" data-pk="${i}">${CHECK}</button><span class="pt">${esc(x.t)}</span><button class="pdel" data-pd="${i}" aria-label="Quitar">×</button></div>`).join('')}<input class="pin" id="ePaso" placeholder="+ Agregar paso" enterkeyhint="done"></div>
+    <div class="lbl">Dividir en pasos${pasos.length?' · '+pasos.filter(x=>x.h).length+'/'+pasos.length:''}</div>${pasos.length?'':'<div class="ayuda" style="margin:-2px 4px 9px">Para pendientes grandes: escribe cada parte y presiona Enter. Ej: <b>Episodio 13</b> → cortes, clips, miniatura, subir.</div>'}
+    <div class="pasos">${pasos.map((x,i)=>`<div class="paso-r${x.h?' ok':''}"><button class="pck" data-pk="${i}">${CHECK}</button><span class="pt">${esc(x.t)}</span><button class="pdel" data-pd="${i}" aria-label="Quitar">×</button></div>`).join('')}<input class="pin" id="ePaso" placeholder="+ Escribe un paso y Enter" enterkeyhint="done"></div>
     <div class="lbl">Lista</div><div class="chips">${LISTAS.map(l=>`<button class="chip${l.id===lista?' on':''}" data-l="${l.id}">${l.n}</button>`).join('')}</div>
     <button class="sw" id="eImp"><span>Importante</span><span class="tog${imp?' on':''}"></span></button>
     <button class="btn" id="eOk">Listo</button>
@@ -520,10 +580,7 @@ function editar(id){
     $('ePaso').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const v=e.target.value.trim();if(v){pasos.push({t:v,h:false});e.target.value='';montar();$('ePaso').focus();}}};
     $('eImp').onclick=()=>{imp=!imp;$('eImp').querySelector('.tog').classList.toggle('on',imp);};
     $('eOk').onclick=()=>cerrar();
-    $('eDel').onclick=async()=>{cerrar(false);const copia={...t};tareas=tareas.filter(x=>x!==t);pintar();
-      const {error}=await sb.from('tareas').delete().eq('id',t.id);
-      if(error){toast('No se pudo eliminar');cargar();return;}
-      toast('Eliminado','Deshacer',async()=>{const {user_id,...fila}=copia;tareas.push(copia);pintar();const r=await sb.from('tareas').insert(fila);if(r.error){toast('No se pudo recuperar');cargar();}});};
+    $('eDel').onclick=()=>{cerrar(false);eliminar(t);};
   };
   abrir('',guardar);montar();
 }
