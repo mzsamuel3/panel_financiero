@@ -863,7 +863,7 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
           <button class="btn btn-ghost" id="cl-logout" style="color:var(--red)">Cerrar sesión</button>
         </div>
         <div class="note">Para compartir la app con alguien (ej. tu mamá): crea su usuario en Supabase y mándale el link con <b>?modo=sencillo</b> al final. Verá solo lo esencial y una bienvenida de 4 pasos.</div>
-        <div class="btn-row"><button class="btn btn-ghost" id="cfg-sencillo">🌱 Probar el modo sencillo aquí</button></div>
+        <div class="btn-row"><button class="btn btn-ghost" id="cfg-sencillo">🌱 Probar el modo sencillo aquí</button><button class="btn btn-ghost" data-s-act="clave">🔑 Cambiar contraseña</button></div>
       </div>
       <div class="card pad">
         <h3>⚡ Ícono aparte para anotar (opcional)</h3><div class="cap">Para anotar ya tienes el botón <b>+</b> abajo a la derecha del panel. Esto es solo si quieres además un ícono "Anotar" separado en tu pantalla de inicio o usarlo con Siri</div>
@@ -961,7 +961,7 @@ body.sencillo .s-dots span.on{background:var(--blue-l)}
   <button class="auth-skip" id="authSkip">Seguir sin conexión (solo este navegador)</button>
 </div></div>
 <div class="bnav" id="bnav"><button data-go="resumen" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button><button data-go="diaadia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1z"/><path d="M9 8h6M9 12h6"/></svg>Movimientos</button><button class="bplus" id="bPlus" aria-label="Anotar">+</button><button data-go="deudas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Deudas</button><button id="bMore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Más</button></div>
-<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span><i class="c-txt">Gastos fijos</i><i class="s-txt">Mis pagos de cada mes</i></button><button data-go="proyeccion" class="c-only"><span>📈</span>Proyección</button><button data-go="simulador" class="c-only"><span>🚦</span>Simulador</button><button data-go="ajustes" class="c-only"><span>⚙️</span>Ajustes</button><button class="s-only" data-s-act="mensajes"><span>📩</span>Mensajes automáticos</button><button class="s-only" data-s-act="ayuda"><span>❓</span>¿Cómo se usa?</button><button class="s-only s-wide" data-s-act="salir"><span>🚪</span>Cerrar sesión</button><button class="s-only s-wide s-mini" data-s-act="completo">Modo completo</button></div></div>
+<div class="more-bg" id="moreBg"><div class="more"><div class="qa-grab"></div><button data-go="gastos"><span>📌</span><i class="c-txt">Gastos fijos</i><i class="s-txt">Mis pagos de cada mes</i></button><button data-go="proyeccion" class="c-only"><span>📈</span>Proyección</button><button data-go="simulador" class="c-only"><span>🚦</span>Simulador</button><button data-go="ajustes" class="c-only"><span>⚙️</span>Ajustes</button><button class="s-only" data-s-act="mensajes"><span>📩</span>Mensajes automáticos</button><button class="s-only" data-s-act="ayuda"><span>❓</span>¿Cómo se usa?</button><button class="s-only s-wide" data-s-act="clave"><span>🔑</span>Cambiar mi contraseña</button><button class="s-only s-wide" data-s-act="salir"><span>🚪</span>Cerrar sesión</button><button class="s-only s-wide s-mini" data-s-act="completo">Modo completo</button></div></div>
 <div class="qa-bg" id="sSheet"><div class="qa s-sheet"><div class="qa-grab"></div><div id="sSheetBody"></div></div></div>
 <div class="s-onb" id="sOnb"><div class="s-onb-in" id="sOnbBody"></div></div>
 <button class="fab" id="fabAdd" title="Anotar gasto" aria-label="Anotar gasto">+</button>
@@ -2346,6 +2346,25 @@ renderMobile();
       <a class="s-btn wa" href="https://wa.me/?text=${encodeURIComponent(TXT_WA)}" target="_blank" rel="noopener">Pedírselo a Samuel por WhatsApp</a>
       <button class="s-link" data-s-cerrar>Ahora no</button>`);
   }
+  function hojaClave(){
+    abrirHoja(`<div class="s-h">🔑 Cambiar mi contraseña</div>
+      <label class="s-f"><span>Contraseña nueva <i>(mínimo 6 letras o números)</i></span><input class="inp" id="scNueva" type="password" autocomplete="new-password"></label>
+      <label class="s-f"><span>Escríbela otra vez</span><input class="inp" id="scOtra" type="password" autocomplete="new-password"></label>
+      <div class="s-hint" id="scMsg" style="color:var(--red)"></div>
+      <button class="s-btn" id="scOk">Guardar contraseña</button>
+      <button class="s-link" data-s-cerrar>Cancelar</button>`);
+    $('scOk').onclick = async () => {
+      const a = $('scNueva').value, b = $('scOtra').value, msg = $('scMsg');
+      if(a.length < 6){ msg.textContent = 'Debe tener al menos 6 letras o números.'; return; }
+      if(a !== b){ msg.textContent = 'Las dos contraseñas no son iguales.'; return; }
+      if(typeof sb === 'undefined' || !sb || !cloudReady){ msg.textContent = 'Necesitas internet y haber iniciado sesión.'; return; }
+      $('scOk').disabled = true; $('scOk').textContent = 'Guardando…';
+      const { error } = await sb.auth.updateUser({ password: a });
+      $('scOk').disabled = false; $('scOk').textContent = 'Guardar contraseña';
+      if(error){ msg.textContent = /different|same/i.test(error.message) ? 'Esa es la misma contraseña de ahora. Escribe una nueva.' : 'No se pudo cambiar. Intenta de nuevo.'; return; }
+      cerrarHoja(); toast('Contraseña cambiada ✓ Úsala la próxima vez que entres');
+    };
+  }
   function hojaAyuda(){
     abrirHoja(`<div class="s-h">¿Cómo se usa?</div>
       <div class="s-tip"><span>➕</span><div><b>Anotar un gasto</b><br>Toca el botón <b>+</b> de abajo, escribe cuánto fue y toca en qué lo gastaste.</div></div>
@@ -2360,6 +2379,7 @@ renderMobile();
     if(a === 'mensajes') hojaMensajes();
     else if(a === 'ayuda') hojaAyuda();
     else if(a === 'salir'){ const lo = $('cl-logout'); if(lo) lo.click(); }
+    else if(a === 'clave') hojaClave();
     else if(a === 'completo') askConfirm('¿Pasar al modo completo?', 'Verás todas las secciones (proyección, simulador, ajustes). Puedes volver con el link de modo sencillo.', 'Cambiar').then(ok => { if(ok){ state.modo = 'completo'; save(); aplicarModo(); renderResumen(); } });
   }));
   $('cfg-sencillo').addEventListener('click', () => askConfirm('¿Activar el modo sencillo?', 'La app mostrará solo lo esencial, con letras más grandes. Para volver: Más → Modo completo.', 'Activar').then(ok => { if(ok){ state.modo = 'sencillo'; save(); aplicarModo(); renderResumen(); goTab('resumen'); } }));
@@ -2685,7 +2705,7 @@ window.addEventListener('online',()=>{if(cloudReady)cloudSync();});
 <script>
 /* Aviso de versión nueva: compara esta versión con version.json (sin caché). */
 (function(){
-  var VERSION = "2026-10-27.3";
+  var VERSION = "2026-10-27.4";
   var avisado = false;
   function revisar(){
     if(avisado || location.protocol === 'file:') return;
