@@ -326,6 +326,32 @@ body.sencillo .mdebt{cursor:pointer}
 .s-nav .s-btn{width:auto;flex:1;margin:0}
 .s-nav .s-link{width:auto;padding:12px 10px}
 
+
+/* ===== MODO SENCILLO: paleta tranquila (salvia / azul petróleo) ===== */
+body.sencillo{
+  --bg:#0c1315;--bg2:#101a1c;
+  --glass:rgba(24,40,42,.6);--glass2:rgba(26,44,46,.5);--glass3:rgba(30,50,52,.55);
+  --hi:#eef5f3;--mid:#a9c0bb;--dim:#718c86;
+  --blue:#4f9d8f;--blue-l:#8fd3c4;--blue-d:#2d6b62;--cyan:#7cc4b5;--sky:#b7e3d9;
+  --glow:0 0 0 1px rgba(79,157,143,.25),0 8px 30px -8px rgba(79,157,143,.4);
+  background:var(--bg);
+}
+body.sencillo .b1{background:radial-gradient(circle,#1f4a44,transparent 68%)}
+body.sencillo .b2,body.sencillo .b3,body.sencillo .b4{display:none}
+body.sencillo .greet .hello .accent{background:linear-gradient(115deg,#b7e3d9,#6fb8aa 55%,#cdeee6);-webkit-background-clip:text;background-clip:text}
+body.sencillo .card{background:#132022!important;border-color:rgba(255,255,255,.08)}
+body.sencillo .qa,body.sencillo .more{background:#111d1f}
+body.sencillo .bnav{background:rgba(12,19,21,.98)}
+body.sencillo nav{background:rgba(12,19,21,.97)!important}
+body.sencillo .s-onb{background:#0e1719}
+body.sencillo .pay .day{background:rgba(79,157,143,.16)}
+body.sencillo .qa-chip.on,body.sencillo .s-chip.on{background:rgba(79,157,143,.28);border-color:var(--blue-l)}
+body.sencillo .qa-chip.on{box-shadow:0 0 0 1px var(--blue-l) inset}
+body.sencillo .s-msg-card{border-color:rgba(143,211,196,.45)!important;background:rgba(79,157,143,.1)!important}
+body.sencillo .inp:focus{box-shadow:0 0 0 3px rgba(79,157,143,.22)}
+body.sencillo .bnav .bplus{font-size:32px;box-shadow:0 10px 24px -6px rgba(79,157,143,.7),0 0 0 4px var(--bg)}
+body.sencillo .s-dots span.on{background:var(--blue-l)}
+
 /* ===== nube: login + estado de sincronización ===== */
 .sync-pill{font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--mid);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dim)}
@@ -2229,6 +2255,7 @@ renderMobile();
     const pedido = lsGet(MODO_KEY);
     if(pedido && state.modo !== pedido){ state.modo = pedido; lsSet(MODO_KEY, null); save(); }
     document.body.classList.toggle('sencillo', esSencillo());
+    const tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content', esSencillo() ? '#0c1315' : '#0a0606');
   };
   const esc2 = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const plata = n => cop(n).replace(/\s/g,'');
@@ -2658,7 +2685,7 @@ window.addEventListener('online',()=>{if(cloudReady)cloudSync();});
 <script>
 /* Aviso de versión nueva: compara esta versión con version.json (sin caché). */
 (function(){
-  var VERSION = "2026-10-27.2";
+  var VERSION = "2026-10-27.3";
   var avisado = false;
   function revisar(){
     if(avisado || location.protocol === 'file:') return;
