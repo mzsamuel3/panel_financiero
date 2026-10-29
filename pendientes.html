@@ -132,6 +132,14 @@ h1{font-size:36px;font-weight:700;letter-spacing:-.035em;margin:0;line-height:1.
 .pbar{display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 7px;border-radius:999px;font-size:11.5px;font-weight:600;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);color:var(--mid)}
 .pbar i{display:block;width:26px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);overflow:hidden}
 .pbar i b{display:block;height:100%;background:#fff;border-radius:2px}
+.pa{display:flex;align-items:center;gap:10px;margin-top:9px;padding:8px 10px 8px 8px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden}
+.pa-ck{flex:0 0 20px;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;transition:.25s var(--spring)}
+.pa-ck svg{width:10px;height:10px;opacity:0;transition:.2s}
+.pa-ck.ok{background:#fff;border-color:#fff;transform:scale(1.15)}.pa-ck.ok svg{opacity:1}
+.pa-t{flex:1;min-width:0;font-size:14.5px;font-weight:500;line-height:1.25;overflow-wrap:anywhere}
+.pa-t small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin-bottom:1px}
+.pa-bar{position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.06)}
+.pa-bar b{display:block;height:100%;background:rgba(255,255,255,.55)}
 .grp-t{color:var(--dim);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:18px 6px 9px}
 .grp-t:first-child{margin-top:4px}
 .row{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -366,10 +374,16 @@ function meta(t){
   if(filtro==='todo'||filtro==='hoy')p.push(`<span class="tag">${nom(t.lista)}</span>`);
   if(t.fecha&&!t.hecha){const n=difDias(t.fecha);p.push(`<span class="fch${n<0?' late':n===0?' hoy':''}">${cuando(t.fecha)}${t.repetir?' '+REP:''}</span>`);}
   else if(t.repetir&&!t.hecha)p.push(`<span class="fch">${REP} ${REPS[t.repetir]}</span>`);
-  const ps=t.pasos||[];if(ps.length){const ok=ps.filter(x=>x.h).length;p.push(`<span class="pbar"><i><b style="width:${Math.round(ok/ps.length*100)}%"></b></i>${ok}/${ps.length}</span>`);}
+  const ps=t.pasos||[];if(ps.length&&(t.hecha||ps.every(x=>x.h))){const ok=ps.filter(x=>x.h).length;p.push(`<span class="pbar"><i><b style="width:${Math.round(ok/ps.length*100)}%"></b></i>${ok}/${ps.length}</span>`);}
   return p.join('');
 }
-const fila=t=>`<div class="row glass${t.hecha?' done':''}${t.importante?' imp':''}${t.id===recien?' in':''}" data-id="${t.id}"><button class="ck" data-ck="${t.id}" aria-label="Hecho">${CHECK}</button><button class="tx" data-ed="${t.id}">${esc(t.texto)}<span class="meta">${meta(t)}</span></button>${t.importante&&!t.hecha?'<span class="star"></span>':''}</div>`;
+function pasoActual(t){
+  const ps=t.pasos||[];if(t.hecha||!ps.length)return'';
+  const i=ps.findIndex(x=>!x.h);if(i<0)return'';
+  const pct=Math.round(i/ps.length*100);
+  return`<span class="pa"><span class="pa-ck" data-paso="${t.id}" role="button" aria-label="Paso listo">${CHECK}</span><span class="pa-t"><small>Paso ${i+1} de ${ps.length}</small>${esc(ps[i].t)}</span><span class="pa-bar"><b style="width:${pct}%"></b></span></span>`;
+}
+const fila=t=>`<div class="row glass${t.hecha?' done':''}${t.importante?' imp':''}${t.id===recien?' in':''}" data-id="${t.id}"><button class="ck" data-ck="${t.id}" aria-label="Hecho">${CHECK}</button><button class="tx" data-ed="${t.id}">${esc(t.texto)}<span class="meta">${meta(t)}</span>${pasoActual(t)}</button>${t.importante&&!t.hecha?'<span class="star"></span>':''}</div>`;
 
 function pintarReuniones(){
   if(filtro!=='hoy')return'';
@@ -514,6 +528,7 @@ document.addEventListener('click',e=>{
   const ck=e.target.closest('[data-ck]');
   if(ck){const t=tareas.find(x=>x.id===ck.dataset.ck);if(!t)return;
     if(!t.hecha)completar(t,ck.closest('.row'));else actualizar(t,{hecha:false,hecha_en:null});return;}
+  const pa=e.target.closest('[data-paso]');if(pa){e.preventDefault();e.stopPropagation();pasoListo(pa.dataset.paso,pa);return;}
   const ed=e.target.closest('[data-ed]');if(ed){editar(ed.dataset.ed);return;}
   if(e.target.closest('#verHechas')){verHechas=!verHechas;pintar();return;}
   if(e.target.closest('#calOmit')){ls.set('pend_cal_omit',true);pintar();return;}
@@ -525,10 +540,22 @@ document.addEventListener('click',e=>{
   }
 },true);
 
+async function pasoListo(id,el){
+  const t=tareas.find(x=>x.id===id);if(!t)return;
+  const ps=(t.pasos||[]).map(x=>({...x}));const i=ps.findIndex(x=>!x.h);if(i<0)return;
+  ps[i].h=true;if(navigator.vibrate)navigator.vibrate(8);
+  el.classList.add('ok');await new Promise(r=>setTimeout(r,320));
+  const antes=t.pasos;recien=null;
+  await actualizar(t,{pasos:ps});
+  const quedan=ps.filter(x=>!x.h).length;
+  const sig=ps.find(x=>!x.h);
+  toast(sig?'✓ '+ps[i].t+' · sigue: '+sig.t:'✓ Todos los pasos listos','Deshacer',()=>actualizar(t,{pasos:antes}));
+}
+
 /* ---------- mantener presionado: menú (eliminar, etc.) · mantener y arrastrar: reordenar ---------- */
 let arr=null;
 document.addEventListener('pointerdown',e=>{
-  const row=e.target.closest('#lista .row');if(!row||e.target.closest('.ck')||e.button>0||$('ctx').classList.contains('show'))return;
+  const row=e.target.closest('#lista .row');if(!row||e.target.closest('.ck,.pa-ck')||e.button>0||$('ctx').classList.contains('show'))return;
   arr={row,y0:e.clientY,listo:false,movio:false,timer:setTimeout(()=>levantar(row),420)};
 });
 function levantar(row){
